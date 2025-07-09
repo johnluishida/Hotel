@@ -1,0 +1,250 @@
+*{
+    margin: 0;
+}
+body{
+    padding: 0;
+    margin: 0;
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/static/images/photo.webp') center center/cover no-repeat;
+
+    color: white;
+}
+/*Header Content*/
+.header {
+    width: 100%;
+    display: flex;
+    position: fixed;
+    justify-content: space-between;
+    background-color: #041A2D;
+    padding: 0;
+    margin: 0;
+    height:105px;
+    z-index: 1000;
+}
+
+.header img {
+    padding: 5px;
+    width: 70px;
+    border-radius: 400px;
+    margin-left: 10px;
+    margin-top: 15px;
+}
+
+.header ul {
+    display: flex;
+    list-style-type: none;
+    gap: 20px;
+    padding: 35px;
+    padding-right: 50px;
+}
+
+.header ul li{
+    display: flex;
+    align-items: center;
+}
+.header ul li a {
+    display: inline-block;
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+}
+
+.header ul li a.active{
+    background-color: goldenrod;
+    padding: 5px;
+    font-size: 18px;
+    border-radius: 10px;
+    color: black;
+}
+.header ul li a:hover {
+    background-color: goldenrod;
+    padding: 5px;
+    font-size: 18px;
+    border-radius:10px ;
+    color: black;
+}
+
+.header button{
+    background-color: goldenrod;
+    color: white;
+    padding: 10px 30px;
+    height: 40px;
+    border-radius: 100px;
+}
+.header button:hover{
+    background-color: rgb(189, 144, 30);
+}
+.user-icon{
+    font-size: 50px;
+    color: #f3edde;
+    margin-right: 0;
+    margin-left: 10px;
+}
+.first_section {
+    padding-top: 10%;
+    padding-bottom: 5%;
+    display: flex;
+    justify-content: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    
+}
+.feedback-container {
+    max-width: 600px;
+    margin: 60px auto;
+    background-color: #0d3b63;
+    padding: 70px 120px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-top: 100px;
+}
+
+.feedback-container h1 {
+    margin-bottom: 45px;
+    text-align: center;
+    color: white;
+    margin-top: 0;
+}
+
+.feedback-form .form-group {
+    margin-top: 20px;
+}
+
+.lbl {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600px;
+    color: white;
+    font-size: 20px;
+}
+.lbl1 {
+    margin-top: 10px;
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600px;
+    color: white;
+    font-size: 20px;
+}
+
+textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: vertical;
+    font-size: 15px;
+    
+    color: black;
+    margin-right: 80px;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    font-size: 17px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background-color: #1558b0;
+}
+
+.rating {
+    
+    direction: rtl;
+    unicode-bidi: bidi-override;
+    display: inline-flex;
+}
+.rating > input {
+    display: none;
+}
+.rating > label {
+    font-size: 2rem;
+    color: lightgray;
+    cursor: pointer;
+    padding: 0 5px;
+}
+.rating > input:checked ~ label,
+.rating > label:hover,
+.rating > label:hover ~ label {
+    color: gold;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Modal Box */
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 400px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Modal Header */
+.modal-header {
+    font-size: 20px;
+    font-weight: bold;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+/* Modal Body */
+.modal-body {
+    padding: 15px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Modal Footer */
+.modal-footer {
+    text-align: right;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+}
+
+/* Close Button */
+.modal-close {
+    background-color: #888;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.modal-close:hover {
+    background-color: #555;
+}
+
+/* Success / Error Styles */
+.modal-success .modal-header {
+    color: white;
+    background-color: #28a745;
+}
+.modal-error .modal-header {
+    color: white;
+    background-color: #dc3545;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; top: -50px; }
+    to { opacity: 1; top: 0; }
+}

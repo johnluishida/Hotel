@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Rooms</title>
+        <link href="{{ url_for('static', filename='css/rooms.css') }}" rel="stylesheet">
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    </head>
+    <body>
+        <div class="header">
+            <a href="/"><img src="{{ url_for('static', filename='images/Moon_hotel_logo.png') }}"></a>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/rooms"  class="active">Rooms</a></li>
+                <li><a href="/amenities">Amenities</a></li>
+                <li><a href="/feedback">Feedback</a></li>
+                {% if is_logged_in %}
+                    <button onclick="location.href='/book_room'" style="cursor: pointer; color: black;">Book now</button>
+                    <a href="/profile"><i class='bx bxs-user-circle user-icon'></i></a>
+                {% else %}
+                    <li style="padding-right: 20px;"><a href="/login">Login</a></li>
+                    <button onclick="location.href='/book_room'" style="cursor: pointer; color: black;">Book now</button>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="first_section">
+            <center><h1>Available Rooms</h1></center>
+    <br>
+    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+        {% for room in available_rooms %}
+            <div class="room-container" 
+                 data-room-type="{{ room.room_type }}"
+                 data-description="{{ room.description|e }}"
+                 data-price="{{ room.price }}"
+                 data-image="{{ url_for('static', filename='uploads/' ~ room.image) if room.image else '' }}"
+                 onclick="openModal(this)" style="cursor: pointer;">
+                 
+                {% if room.image %}
+                    <center><img src="{{ url_for('static', filename='uploads/' ~ room.image) }}" alt="{{ room.room_type }} image"></center>
+                {% endif %}
+                <center><h3>{{ room.room_type }}</h3></center><br>
+                <p>
+                    <strong>Description:</strong> 
+                    {{ room.description[:100] }}{% if room.description|length > 100 %}... <span class="see-more" style="color: blue;">See more</span>{% endif %}
+                </p><br>
+                <p><strong>Price:</strong> ₱{{ room.price }}</p>
+                <button onclick="location.href='/bookroom'" class="btn">Book Now</button>
+            </div>
+        {% else %}
+            <h1>No Available Rooms.</h1>
+        {% endfor %}
+    </div>
+        </div>
+        <!-- Modal -->
+<div id="roomModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle"></h2>
+            <button class="close-btn" onclick="closeModal()">X</button>
+        </div>
+        <div class="modal-body">
+            <div style="flex: 1; min-width: 250px;">
+                <img id="modalImage" src="" alt="Room Image" style="width: 100%; border-radius: 10px;">
+            </div>
+            <div style="flex: 2; min-width: 250px;">
+                <p id="modalDescription" style="margin-bottom: 15px;"></p>
+                <p id="modalPrice" style="font-weight: bold; font-size: 20px; color: #4CAF50;"></p>
+            </div>
+            <button  onclick="location.href='/bookroom'" class="btn"><a href="/book_room" style="text-decoration: none;color: black;">Book Now</a></button>
+        </div>
+    </div>
+</div>
+
+    </body>
+    <script>
+        function openModal(element) {
+            const title = element.getAttribute('data-room-type');
+            const description = element.getAttribute('data-description');
+            const price = element.getAttribute('data-price');
+            const image = element.getAttribute('data-image');
+        
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDescription').innerText = description;
+            document.getElementById('modalPrice').innerText = "₱" + price;
+        
+            if (image) {
+                document.getElementById('modalImage').src = image;
+                document.getElementById('modalImage').style.display = "block";
+            } else {
+                document.getElementById('modalImage').style.display = "none";
+            }
+        
+            document.getElementById('roomModal').style.display = "flex"; // <-- because flex now
+        }
+        
+        function closeModal() {
+            document.getElementById('roomModal').style.display = "none";
+        }
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('roomModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+        </script>
+        
+        
+</html>

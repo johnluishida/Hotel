@@ -1,0 +1,520 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+
+.header-img {
+  padding: 20px;
+  width: 80px;
+}
+
+.fixed { position: fixed; }
+.top-0 { top: 0; }
+.top-16 { top: 95px; }
+.left-0 { left: 0; }
+.w-full { width: 100%; }
+.h { height: 110px; }
+.h-full { height: 100%; }
+.bg-color {background-color: #041A2D; }
+.bg-gray-800 { background-color: #1f2937; }
+.bg-gray-100 { background-color: #f3f4f6; }
+.text-white { color:  #041A2D; }
+.burger-color { color: #5c4433; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+.mr-4 { margin-right: 1rem; }
+.rounded { border-radius: 10px; }
+.rounded.shadow { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
+.text-xl { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.pt-16 { padding-top: 110px; }
+.mb-4 { margin-bottom: 1rem; }
+.space-y-6 > * + * { margin-top: 1.5rem; }
+.max-w-4xl { max-width: 56rem; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.transition-all { transition: all 0.3s ease; }
+.transition-transform { transition: transform 0.3s ease; }
+.-translate-x-full { transform: translateX(-100%); }
+.ml-64 { margin-left: 16rem; }
+.w-64 { width: 12rem; }
+.z-40 { z-index: 40; }
+.z-50 { z-index: 50; }
+.bg-white{ background-color: #0d3b63; }
+.color{ background-color: white;}
+.sidebar-text-size{ font-size: 18px; padding-left: 10px;}
+/* When sidebar is collapsed */
+.sidebar-collapsed {
+  width: 60px !important; 
+}
+
+/* Hide the text when collapsed */
+.sidebar-text {
+  display: inline-block; 
+  color: white;
+}
+  
+  .sidebar-collapsed .sidebar-text {
+    display: none;
+  }
+  
+  
+  /* Sidebar should always be visible, just change width */
+  #sidebar {
+    transition: width 0.3s ease;
+  }
+  
+  /* Also shift main content based on sidebar width */
+  .content-shift {
+    margin-left: 15%; /* default expanded width */
+    transition: margin-left 0.3s ease;
+    margin-bottom: 2%;
+  }
+  
+  .content-shift-collapsed {
+    margin-left: 60px; /* width when sidebar is collapsed */
+    margin-bottom: 2%;
+  }
+  
+  .icon-bg{padding:10px;background-color: white; color: black; border-radius: 40px; font-size: 18px;}
+  
+  .p-4 a{ 
+    text-decoration: none;
+  }
+  .p-4 ul{ 
+    list-style-type: none;
+    padding: 0px;
+  }
+  .p-4 li{ 
+    padding: 10px;
+  }
+  .p-4 li.active{ 
+    background-color: goldenrod;
+  }
+  
+  .modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 20px;
+    width: 30%;
+    border-radius: 10px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 30px;
+}
+table th,
+table td {
+    text-align: center;       
+    vertical-align: middle;   
+    padding: 10px;
+    border: 1px solid black;
+}
+table th{
+    background-color: black;
+    color: white;
+}
+table td ul{
+  list-style-type: none;
+  text-align: center; 
+  padding: 0;
+}
+
+
+.first_section {
+    padding-top: 10%;
+    padding-bottom: 5%;
+    display: flex;
+    justify-content: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    
+}
+/* Pagination container */
+nav[aria-label="Page navigation"] ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  margin: 1rem 0 2rem 0;
+  gap: 10px;
+}
+
+/* Pagination items */
+nav[aria-label="Page navigation"] li {
+  display: inline-block;
+}
+
+/* Pagination links */
+nav[aria-label="Page navigation"] a,
+nav[aria-label="Page navigation"] strong {
+  padding: 8px 14px;
+  border: 1px solid black;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  color: black;
+  background-color: white;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+}
+
+/* Current page styling (bold) */
+nav[aria-label="Page navigation"] strong {
+  background-color: black;
+  color: white;
+  cursor: default;
+}
+
+/* Hover effect on page links */
+nav[aria-label="Page navigation"] a:hover {
+  background-color: black;
+  color: white;
+}
+
+/* Common Modal Container */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+}
+
+/* Show modal when triggered */
+.modal.show {
+  display: block;
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fff;
+  margin: 5% auto;
+  border-radius: 12px;
+  padding: 20px 30px;
+  width: 80%;
+  max-width: 600px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease-out;
+  position: relative;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Close button */
+.close-btn {
+  color: #aaa;
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+  color: #000;
+}
+
+/* Amenities badge */
+.amenity-badge {
+  display: inline-block;
+  background-color: #3498db;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  margin: 4px 6px 4px 0;
+  font-size: 14px;
+  position: relative;
+}
+
+/* Form input styling (optional override) */
+.input-field {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.lbl {
+  font-weight: bold;
+  display: block;
+  margin-top: 10px;
+}
+
+.book-btn {
+  background-color: #27ae60;
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.book-btn:hover {
+  background-color: #219150;
+}
+
+/* Room/Amenity list style inside modal (optional) */
+/* Room Modal Background */
+#roomModal.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding-top: 120px; /* offset from header */
+  padding: 120px 20px 40px 20px;
+  background-color: rgba(0, 0, 0, 0.6);
+  overflow-y: auto;
+}
+
+/* Show Modal */
+#roomModal.modal.show {
+  display: block;
+}
+
+/* Modal Box Content */
+#roomModal .modal-content {
+  background-color: #fff;
+  margin: 0 auto;
+  padding: 25px 30px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 650px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  animation: slideFadeIn 0.3s ease-in-out;
+  position: relative;
+}
+
+/* Animation */
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Close Button */
+#roomModal .close-btn {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #777;
+  cursor: pointer;
+}
+
+#roomModal .close-btn:hover {
+  color: #000;
+}
+
+/* Scrollable Room List */
+.room-list {
+  max-height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  margin-top: 20px;
+  padding-right: 10px;
+}
+
+/* Room Card */
+.room-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 15px;
+  background-color: #fafafa;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.room-card:hover {
+  background-color: #f0f8ff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Room Image */
+.room-img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+/* Room Information */
+.room-card h4 {
+  font-size: 16px;
+  color: #333;
+  margin: 6px 0;
+}
+
+.room-card p {
+  font-size: 14px;
+  color: #555;
+  margin: 2px 0;
+}
+
+@media (max-width: 768px) {
+  #roomModal .modal-content {
+    padding: 20px;
+  }
+
+  .room-card {
+    padding: 12px;
+  }
+}
+
+/* Amenities Modal Background */
+.amenities-modal {
+  display: none; /* hidden by default */
+  position: fixed;
+  z-index: 1050; /* higher than other modals */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; /* enable scroll if content is tall */
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent dark overlay */
+}
+
+/* Show modal */
+.amenities-modal.show {
+  display: block;
+}
+
+/* Modal content box */
+.amenities-modal .modal-content {
+  background-color: #fff;
+  margin: 80px auto;
+  padding: 20px 30px;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  position: relative;
+  font-family: Arial, sans-serif;
+}
+
+/* Close button (top right corner) */
+.amenities-modal .close-btn {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #555;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.amenities-modal .close-btn:hover {
+  color: #1976d2;
+}
+
+/* Heading */
+.amenities-modal h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 24px;
+  color: #222;
+}
+
+/* Amenity item container */
+#amenitiesList > div {
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Checkbox + label */
+#amenitiesList input[type="checkbox"] {
+  margin-right: 8px;
+  transform: scale(1.2);
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+#amenitiesList label {
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+}
+
+/* Description text below each amenity */
+#amenitiesList p {
+  margin: 5px 0 0 26px;
+  color: #666;
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* Save button */
+#saveAmenitiesBtn.book-btn {
+  display: block;
+  margin: 25px auto 0 auto;
+  padding: 10px 30px;
+  background-color: #1976d2;
+  border: none;
+  color: white;
+  font-size: 16px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#saveAmenitiesBtn.book-btn:hover {
+  background-color: #0d47a1;
+}
+.btn1{
+  background-color: rgb(62, 211, 62);
+  padding: 5px 10px;
+  color: white;
+  
+}
+.btn2{
+  background-color: rgb(243, 37, 37);
+  padding: 5px 13px;
+  margin-top: 3px;
+  color: white;
+}
+.btn3{
+  background-color: rgb(197, 141, 36);
+  padding: 5px 10px;
+  margin-top: 3px;
+  color: white;
+}
+.amenities-type-btn{
+  background-color: rgb(216, 169, 50);
+  color: black;
+  padding: 10px 10px;
+  border-radius: 6px;
+}
+.room-type-btn{
+  background-color: rgb(216, 169, 50);
+  color: black;
+  padding: 10px 10px;
+  border-radius: 6px;
+}

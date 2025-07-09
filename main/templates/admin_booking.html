@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Management</title>
+    <link href="{{ url_for('static', filename='css/admin_booking.css') }}" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body class="color">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 w-full h bg-color text-white flex items-center px-4 z-50" style="display: flex; align-items: center;">
+      <img src="{{ url_for('static', filename='images/Moon_hotel_logo.png') }}" class="header-img">
+      <button id="toggleSidebar" class="mr-4 bg-white burger-color px-3 py-1 rounded">☰</button>
+    </header>
+  
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed top-16 left-0 w-64 h-[calc(100%-4rem)] bg-white text-white transition-transform z-40"  style="height: calc(100% - 4rem); overflow-y: auto;">
+      <nav class="p-4">
+        <ul>
+          <li>
+            <a href="/admin"><i class='bx bxs-home icon-bg'></i>
+            <span class="sidebar-text burger-color sidebar-text-size">Home</span></a>
+          </li>
+          <li>
+            <a href="/admin_users"><i class='bx bx-user icon-bg'></i>
+            <span class="sidebar-text burger-color sidebar-text-size">Users</span></a>
+          </li>
+          <li>
+            <a href="/admin_rooms"><i class='bx bxs-bed icon-bg'></i>
+            <span class="sidebar-text burger-color sidebar-text-size">Rooms</span></a>
+          </li>   
+          <li>
+            <a href="/admin_amenities"><i class='bx bx-plus-circle icon-bg'></i>
+            <span class="sidebar-text burger-color sidebar-text-size">Amenities</span></a>
+          </li>  
+          <li class="active">
+            <a href="/admin_booking"><i class='bx bxs-book icon-bg'></i>
+            <span class="sidebar-text burger-color sidebar-text-size">Book</span></a>
+          </li>
+          <li>
+          <a href="/admin_feedback"><i class='bx bxs-comment-detail icon-bg'></i> 
+          <span class="sidebar-text burger-color sidebar-text-size">Feedback</span></a>
+          </li>    
+          <li style="position: absolute; bottom: 30px;">
+            <a href="/logout">
+              <i class='bx bx-log-out icon-bg'></i>
+              <span class="sidebar-text burger-color sidebar-text-size">Logout</span>
+            </a>
+          </li>
+          
+      </ul>
+      </nav>
+    </aside>
+  
+    
+    <main id="mainContent" class="pt-16 px-4 transition-all content-shift">
+      <h1>Booking Management</h1>
+      {% if bookings %}
+<table border="1">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Room Type</th>
+            <th>Room Number</th>
+            <th>Amenities</th>
+            <th>Check-in</th>
+            <th>Check-out</th>
+            <th>Guests</th>
+            <th>Total Price</th>
+            <th>Booking Date</th>
+            <th>Status</th>
+            <th>Actions</th> 
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in bookings %}
+        <tr>
+            <td>{{ booking.username }}</td>
+            <td>{{ booking.room_type }}</td>
+            <td>{{ booking.room_number }}</td>
+            <td>
+                {% if booking.amenities %}
+                    <ul>
+                        {% for amenity in booking.amenities.split(', ') %}
+                          <li>{{ amenity }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    None
+                {% endif %}
+            </td>
+            <td>{{ booking.check_in }}</td>
+            <td>{{ booking.check_out }}</td>
+            <td>{{ booking.guest }}</td>
+            <td>₱{{ booking.total_price }}</td>
+            <td>{{ booking.booking_date }}</td>
+            <td>{{ booking.status }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('moon_routes.admin_booking') }}">
+                    <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                    <button type="submit" name="action" value="accept" class="btn1">Accept</button>
+                    <button type="submit" name="action" value="reject" class="btn2">Reject</button>
+                    <button type="submit" name="action" value="cancel" class="btn3">Cancel</button>
+                </form>
+
+                
+
+
+            </td>
+            <!-- Add inside each <td> of Actions column -->
+                
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <h1>No Booked Rooms.</h1>
+{% endif %}
+{% if total_pages > 1 %}
+<nav aria-label="Page navigation">
+  <ul style="list-style: none; display: flex; gap: 8px; padding: 0; margin-top: 1rem;">
+    {% for p in range(1, total_pages + 1) %}
+      <li>
+        {% if p == page %}
+          <strong>{{ p }}</strong>
+        {% else %}
+          <a href="{{ url_for('moon_routes.admin_booking', page=p) }}">{{ p }}</a>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</nav>
+{% endif %}
+
+<!-- Trigger -->
+<button type="button" id="openAddBookingModal" class="book-btn">+ Add Booking</button>
+
+<!-- Admin Add Booking Modal -->
+<div  id="addBookingModal" class="modal">
+  <div style="background-color: #0d3b63;color: white;" class="modal-content">
+    <span class="close-btn" id="closeAddBookingModal">&times;</span>
+    <h2>Add Booking</h2>
+    <form  method="POST" action="/add_booking" id="booking-form">
+      <input type="hidden" name="room_id" id="hidden-room-id">
+      <input type="hidden" name="room_type" id="hidden-room-type">
+      <input type="hidden" name="amenity_ids" id="hidden-amenity-ids">
+
+      <!-- Select User -->
+      <label class="lbl">Select User:</label>
+      <select name="user_id" class="input-field" required>
+        <option value="" disabled selected>Select a user</option>
+        {% for user in users %}
+          <option value="{{ user.id }}">{{ user.username }}</option>
+        {% endfor %}
+      </select><br><br>
+
+      <!-- Choose Room -->
+      <label class="lbl">Room Type:</label>
+      <div class="input-with-button">
+        <input type="text" class="input-field" id="selected-room" readonly placeholder="Choose Room Type">
+        <button type="button" class="room-type-btn" id="choose-room-btn">Choose</button>
+      </div><br>
+
+      <div id="roomModal" class="modal">
+        <div style="background-color: #0d3b63;color: white;" class="modal-content">
+            <span class="close-btn" id="closeRoomModalBtn">&times;</span>
+            <h3>Available Rooms</h3>
+            <div class="room-list">
+            {% for room in available_rooms %}
+            <div class="room-card" onclick="selectRoom('{{ room.id }}', '{{ room.room_type }}')">
+                {% if room.image %}
+                <img src="{{ url_for('static', filename='uploads/' + room.image) }}" alt="Room Image" class="room-img">
+                {% else %}
+                <h1>No Image.</h1>
+                {% endif %}
+                <h4>{{ room.room_type }} - Room {{ room.room_number }}</h4>
+                <p><strong>Floor:</strong> {{ room.floor }}</p>
+                <p><strong>Price:</strong> ₱{{ room.price }}</p>
+                <p><strong>Description:</strong> {{ room.description }}</p>
+            </div>
+            {% else %}
+            <h1>No Available Rooms.</h1>
+            {% endfor %}
+            </div>
+        </div>
+        </div>
+
+
+      <!-- Check-in -->
+      <label class="lbl">Check-in:</label>
+      <input type="date" name="check_in" class="input-field" required><br><br>
+
+      <!-- Check-out -->
+      <label class="lbl">Check-out:</label>
+      <input type="date" name="check_out" class="input-field" required><br><br>
+
+      <!-- Amenities -->
+      <label class="lbl">Amenities:</label>
+      <button type="button" class="amenities-type-btn">Choose Amenities</button><br><br>
+      <div class="amenities-ctnr" id="amenities-ctnr">
+        <div id="selected-amenities-ctnr"></div>
+      </div><br>
+
+      <!-- Amenities Modal -->
+        <div id="amenitiesModal" class="amenities-modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeAmenitiesModal">&times;</span>
+            <h2>Select Amenities</h2>
+            <div id="amenitiesList">
+            {% for amenity in amenities %}
+            <div>
+                <input type="checkbox" id="amenity{{ amenity.id }}" name="amenities" value="{{ amenity.id }}">
+                <label for="amenity{{ amenity.id }}">{{ amenity.amenity }} - ₱{{ "%.2f"|format(amenity.price) }}</label>
+                <p>{{ amenity.description }}</p>
+            </div>
+            {% endfor %}
+            </div>
+            <button id="saveAmenitiesBtn" class="book-btn" type="button">Save</button>
+        </div>
+        </div>
+
+      <!-- Guests -->
+      <label class="lbl">Number of Guests:</label>
+      <input type="number" name="guest" class="input-field" min="1" required><br><br>
+
+      <label class="lbl">Total Price (₱):</label>
+      <input type="text" id="totalPrice" name="totalPrice" class="input-field" readonly value="0.00"><br><br>
+
+      <button type="submit">Add Booking</button>
+    </form>
+  </div>
+</div>
+
+<!-- Admin Edit Booking Modal -->
+<div id="editBookingModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeEditBookingModal">&times;</span>
+    <h2>Edit Booking</h2>
+    <form method="POST" action="/edit_booking" id="edit-booking-form">
+      <input type="hidden" name="booking_id" id="edit-booking-id">
+      <input type="hidden" name="room_id" id="edit-hidden-room-id">
+      <input type="hidden" name="room_type" id="edit-hidden-room-type">
+      <input type="hidden" name="amenity_ids" id="edit-hidden-amenity-ids">
+
+      <label class="lbl">Select User:</label>
+      <select name="user_id" class="input-field" id="edit-user-select" required>
+        {% for user in users %}
+          <option value="{{ user.id }}">{{ user.username }}</option>
+        {% endfor %}
+      </select><br><br>
+
+      <label class="lbl">Room Type:</label>
+      <div class="input-with-button">
+        <input type="text" class="input-field" id="edit-selected-room" readonly>
+        <button type="button" class="room-type-btn" id="edit-choose-room-btn">Choose</button>
+      </div><br>
+
+      <!-- Reuse existing room modal -->
+      
+      <label class="lbl">Check-in:</label>
+      <input type="date" name="check_in" class="input-field" id="edit-check-in" required><br><br>
+
+      <label class="lbl">Check-out:</label>
+      <input type="date" name="check_out" class="input-field" id="edit-check-out" required><br><br>
+
+      <label class="lbl">Amenities:</label>
+      <button type="button" class="amenities-type-btn" id="edit-amenities-btn">Choose Amenities</button><br><br>
+      <div class="amenities-ctnr" id="edit-amenities-ctnr">
+        <div id="edit-selected-amenities-ctnr"></div>
+      </div><br>
+
+      <!-- Reuse existing amenities modal -->
+
+      <label class="lbl">Number of Guests:</label>
+      <input type="number" name="guest" class="input-field" id="edit-guest" min="1" required><br><br>
+
+      <label class="lbl">Total Price (₱):</label>
+      <input type="text" name="totalPrice" class="input-field" id="edit-total-price" readonly><br><br>
+
+      <button type="submit">Update Booking</button>
+    </form>
+  </div>
+</div>
+
+    </main>
+  
+    
+   
+</body>
+ <script src="{{ url_for('static', filename='js/admin_booking.js') }}"></script>
+ <script>
+  // --- Modal Elements ---
+const bookingModal = document.getElementById("booking-modal");
+const openBookingModalBtn = document.getElementById("open-booking-modal");
+const closeBookingModalBtn = document.getElementById("close-booking-modal");
+
+const addBookingModal = document.getElementById("addBookingModal");
+const openAddBookingModalBtn = document.getElementById("openAddBookingModal");
+const closeAddBookingModalBtn = document.getElementById("closeAddBookingModal");
+
+const roomModal = document.getElementById("roomModal");
+const chooseRoomBtn = document.getElementById("choose-room-btn");
+const closeRoomModalBtn = document.getElementById("closeRoomModalBtn");
+
+const amenitiesModal = document.getElementById("amenitiesModal");
+const openAmenitiesBtn = document.querySelector(".amenities-type-btn");
+const closeAmenitiesBtn = document.getElementById("closeAmenitiesModal");
+const amenitiesList = document.getElementById("amenitiesList");
+const saveAmenitiesBtn = document.getElementById("saveAmenitiesBtn");
+
+// Hidden inputs & containers
+const hiddenRoomId = document.getElementById("hidden-room-id");
+const hiddenRoomType = document.getElementById("hidden-room-type");
+const hiddenAmenityInput = document.getElementById("hidden-amenity-ids");
+const selectedAmenitiesContainer = document.getElementById("selected-amenities-ctnr");
+const totalPriceInput = document.getElementById("totalPrice");
+
+// --- Modal Show/Hide ---
+openAddBookingModalBtn?.addEventListener("click", () => {
+  addBookingModal.classList.add("show");
+});
+closeAddBookingModalBtn?.addEventListener("click", () => {
+  addBookingModal.classList.remove("show");
+});
+
+chooseRoomBtn?.addEventListener("click", () => {
+  roomModal.classList.add("show");
+});
+closeRoomModalBtn?.addEventListener("click", () => {
+  roomModal.classList.remove("show");
+});
+
+openAmenitiesBtn?.addEventListener("click", () => {
+  amenitiesModal.classList.add("show");
+});
+closeAmenitiesBtn?.addEventListener("click", () => {
+  amenitiesModal.classList.remove("show");
+});
+
+saveAmenitiesBtn?.addEventListener("click", () => {
+  amenitiesModal.classList.remove("show");
+});
+
+// Close modals when clicking outside
+window.onclick = function (event) {
+  if (event.target === bookingModal) bookingModal.style.display = "none";
+  if (event.target === addBookingModal) addBookingModal.classList.remove("show");
+  if (event.target === roomModal) roomModal.classList.remove("show");
+  if (event.target === amenitiesModal) amenitiesModal.classList.remove("show");
+};
+
+// --- Amenity Selection ---
+let selectedIds = [];
+
+function updateSelectedAmenities() {
+  selectedAmenitiesContainer.innerHTML = "";
+
+  selectedIds.forEach((amenityId) => {
+    const checkbox = document.querySelector(`#amenity${amenityId}`);
+    if (!checkbox) return;
+
+    const badge = document.createElement("span");
+    badge.textContent = checkbox.nextElementSibling.textContent;
+    badge.style.cssText =
+      "background-color: #1976d2; color: white; padding: 5px 10px; margin-right: 8px; border-radius: 15px; font-size: 14px; display: inline-flex; align-items: center;";
+
+    const removeBtn = document.createElement("span");
+    removeBtn.textContent = " ✕";
+    removeBtn.style.cssText = "margin-left: 8px; cursor: pointer; font-weight: bold;";
+    removeBtn.onclick = () => {
+      checkbox.checked = false;
+      badge.remove();
+      selectedIds = selectedIds.filter((id) => id !== amenityId);
+      hiddenAmenityInput.value = selectedIds.join(",");
+      calculateTotalPrice();
+    };
+
+    badge.appendChild(removeBtn);
+    selectedAmenitiesContainer.appendChild(badge);
+  });
+
+  hiddenAmenityInput.value = selectedIds.join(",");
+}
+
+// Initialize amenity checkboxes
+amenitiesList.querySelectorAll("input[type=checkbox]").forEach((checkbox) => {
+  checkbox.addEventListener("change", () => {
+    const amenityId = checkbox.value;
+    if (checkbox.checked) {
+      if (!selectedIds.includes(amenityId)) selectedIds.push(amenityId);
+    } else {
+      selectedIds = selectedIds.filter((id) => id !== amenityId);
+    }
+    updateSelectedAmenities();
+    calculateTotalPrice();
+  });
+});
+
+// --- Room Selection and Pricing ---
+let selectedRoomPrice = 0;
+const amenityPrices = {};
+
+// Extract amenity prices
+amenitiesList.querySelectorAll("input[type=checkbox]").forEach((cb) => {
+  const label = cb.nextElementSibling.textContent;
+  const priceMatch = label.match(/₱([\d,.]+)/);
+  amenityPrices[cb.value] = priceMatch ? parseFloat(priceMatch[1].replace(/,/g, "")) : 0;
+});
+
+function selectRoom(roomId, roomType) {
+  const roomCard = [...document.querySelectorAll(".room-card")].find((card) =>
+    card.getAttribute("onclick").includes(`'${roomId}'`)
+  );
+  if (!roomCard) return;
+
+  const priceParagraph = [...roomCard.querySelectorAll("p")].find((p) =>
+    p.textContent.includes("Price:")
+  );
+  const priceText = priceParagraph ? priceParagraph.textContent : "";
+  const priceMatch = priceText.match(/₱([\d,.]+)/);
+  selectedRoomPrice = priceMatch ? parseFloat(priceMatch[1].replace(/,/g, "")) : 0;
+
+  hiddenRoomId.value = roomId;
+  hiddenRoomType.value = roomType;
+  document.getElementById("selected-room").value = roomType;
+
+  roomModal.classList.remove("show");
+  calculateTotalPrice();
+}
+
+// --- Total Price Calculation ---
+function getNights(checkIn, checkOut) {
+  const date1 = new Date(checkIn);
+  const date2 = new Date(checkOut);
+  const diffTime = date2 - date1;
+  const diffDays = diffTime / (1000 * 60 * 60 * 24);
+  return diffDays > 0 ? diffDays : 0;
+}
+
+function calculateTotalPrice() {
+  const checkInDate = document.querySelector('input[name="check_in"]')?.value;
+  const checkOutDate = document.querySelector('input[name="check_out"]')?.value;
+  if (!checkInDate || !checkOutDate) return;
+
+  const nights = getNights(checkInDate, checkOutDate);
+  const amenitiesSum = selectedIds.reduce((sum, id) => sum + (amenityPrices[id] || 0), 0);
+  const total = selectedRoomPrice * nights + amenitiesSum;
+
+  totalPriceInput.value = total.toFixed(2);
+}
+
+// Listen for date changes
+document.querySelector('input[name="check_in"]')?.addEventListener("change", calculateTotalPrice);
+document.querySelector('input[name="check_out"]')?.addEventListener("change", calculateTotalPrice);
+
+
+document.querySelectorAll('.open-edit-modal').forEach(button => {
+  button.addEventListener('click', () => {
+    const bookingId = button.getAttribute('data-booking-id');
+    const userId = button.getAttribute('data-user-id');
+    const roomId = button.getAttribute('data-room-id');
+    const checkIn = button.getAttribute('data-check-in');
+    const checkOut = button.getAttribute('data-check-out');
+    const guest = button.getAttribute('data-guest');
+    const amenityIdsStr = button.getAttribute('data-amenity_ids_str'); // comma-separated string
+    const amenityIds = amenityIdsStr ? amenityIdsStr.split(',') : [];
+    const roomType = button.getAttribute('data-room-type');
+    const totalPrice = button.getAttribute('data-total-price');
+
+    // Populate the edit modal fields
+    document.getElementById('editBookingModal').style.display = 'block';
+    document.getElementById('edit-booking-id').value = bookingId;
+    document.getElementById('edit-user-select').value = userId;
+    document.getElementById('edit-hidden-room-id').value = roomId;
+    document.getElementById('edit-hidden-room-type').value = roomType; // Fill if needed
+    document.getElementById('edit-selected-room').value = roomType; // Fill if needed
+    document.getElementById('edit-check-in').value = checkIn;
+    document.getElementById('edit-check-out').value = checkOut;
+    document.getElementById('edit-guest').value = guest;
+    document.getElementById('edit-hidden-amenity-ids').value = amenityIds.join(',');
+    document.getElementById('edit-total-price').value = totalPrice;
+
+
+    // Show selected amenities visually
+    const container = document.getElementById('edit-selected-amenities-ctnr');
+    container.innerHTML = '';
+    amenityIds.forEach(id => {
+      const label = document.createElement('span');
+      label.innerText = `Amenity ID: ${id}`;
+      label.style.marginRight = '10px';
+      container.appendChild(label);
+    });
+  });
+});
+
+// Close modal
+document.getElementById('closeEditBookingModal').onclick = function() {
+  document.getElementById('editBookingModal').style.display = 'none';
+};
+
+
+
+ </script>
+</html>

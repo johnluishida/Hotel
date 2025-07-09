@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In</title>
+    <link href="{{ url_for('static', filename='css/login.css') }}" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="first_section">
+        <div class="container">
+            <form action="/login_submit" method="POST" class="login_submit">
+                <h3>Login</h3>
+            
+                <span class="input-span">
+                    <label for="username" class="label">Username:</label>
+                    <input type="text" id="username" name="username">
+                    {% if usernameError %}
+                        <div class="error">{{ usernameError }}</div>
+                    {% endif %}
+                </span><br><br>
+            
+                <span class="input-span">
+                    <label for="password" class="label">Password:</label>
+                    <div class="password-container">
+                        <input type="password" name="password" id="password">
+                        <span class="toggle-password" onclick="togglePassword()"><i class='bx bx-show'></i></span>
+                    </div>
+                    {% if passwordError %}
+                        <div class="error">{{ passwordError }}</div>
+                    {% endif %}
+                </span><br><br>
+                
+            
+                <button type="submit">Login</button>
+                <h3 class="forget_password"><a href="/forget_password">Forget password</a></h3>
+                <h3>Don't have an account? <a href="/register">Register</a></h3>
+            </form>
+        </div>
+    </div>
+</body>
+<script>
+    function togglePassword() {
+    const passwordInput = document.getElementById("password");
+    const icon = document.querySelector(".toggle-password i");
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        icon.classList.replace('bx-show', 'bxs-show'); // Using classList.replace for icon change
+    } else {
+        passwordInput.type = "password";
+        icon.classList.replace('bxs-show', 'bx-show');
+    }
+}
+
+</script>
+
+</html>

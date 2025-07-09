@@ -1,0 +1,375 @@
+*{
+    margin: 0;
+}
+body{
+    padding: 0;
+    margin: 0;
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/static/images/photo.webp') center center/cover no-repeat;
+
+    color: white;
+}
+.header {
+    width: 100%;
+    display: flex;
+    position: fixed;
+    justify-content: space-between;
+    background-color: #041A2D;
+    padding: 0;
+    margin: 0;
+    height:105px;
+    z-index: 1000;
+    margin-top: 0;
+}
+
+.header img {
+    padding: 5px;
+    width: 70px;
+    border-radius: 400px;
+    margin-left: 10px;
+    margin-top: 15px;
+}
+
+.header ul {
+    display: flex;
+    list-style-type: none;
+    gap: 20px;
+    padding: 35px;
+    padding-right: 50px;
+}
+
+.header ul li{
+    display: flex;
+    align-items: center;
+}
+.header ul li a {
+    display: inline-block;
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+}
+
+.header ul li a.active{
+    background-color: goldenrod;
+    padding: 5px;
+    font-size: 18px;
+    border-radius: 10px;
+    color: black;
+}
+.header ul li a:hover {
+    background-color: goldenrod;
+    padding: 5px;
+    font-size: 18px;
+    color: black;
+    border-radius: 10px;
+}
+
+.header button{
+    background-color: goldenrod;
+    color: black;
+    padding: 10px 30px;
+    height: 40px;
+    border-radius: 100px;
+}
+.header .user-icon{
+    font-size: 50px;
+    color: #f3edde;
+    margin-right: 0;
+    margin-left: 10px;
+}
+
+.first_section{
+    padding-top: 110px;
+}
+
+.first_section .flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.first_section .flex-container .amenities-container {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+    width: 200px;
+    height: 200px;
+}
+
+/* Container styling */
+.container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 25px 30px;
+    background: #0d3b63;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+}
+
+/* Header */
+.container h2 {
+    color: white;
+    margin-bottom: 20px;
+}
+
+/* Labels */
+.lbl {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: white;
+}
+
+/* Input fields */
+.input-field {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.input-field:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+/* Buttons */
+.room-type-btn,
+.amenities-type-btn,
+.book-btn {
+    background-color: rgb(204, 160, 50);
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.room-type-btn:hover,
+.amenities-type-btn:hover,
+.book-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Input with button container */
+.input-with-button {
+    display: flex;
+    gap: 10px;
+}
+
+/* Error message styling */
+.error-message {
+    color: #D8000C;
+    background-color: #FFD2D2;
+    padding: 8px 10px;
+    border-left: 5px solid #D8000C;
+    border-radius: 5px;
+    margin-top: -10px;
+    margin-bottom: 15px;
+}
+
+/* Amenities container */
+.amenities-ctnr {
+    border: 1px dashed #aaa;
+    padding: 10px;
+    border-radius: 5px;
+    min-height: 40px;
+    background-color: #f9f9f9;
+}
+
+/* Selected amenities container */
+#selected-amenities-ctnr {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Amenity badge (optional if you display selected amenities) */
+#selected-amenities-ctnr div {
+    background-color: #007BFF;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 15px;
+    font-size: 13px;
+}
+
+.modal {
+    /* initially hidden */
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+
+    /* When visible, modal content should be flex and aligned */
+    /* We'll add this in a class to toggle */
+    /* display: flex; */
+    /* justify-content: center; */
+    /* align-items: flex-start; */
+    padding-top: 120px; /* header height */
+    padding-left: 20px;
+    padding-right: 20px;
+
+    overflow-y: auto;
+}
+
+/* Visible modal class */
+.modal.show {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+
+
+.modal-content {
+    background-color: #fff;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 900px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    max-height: calc(100vh - 110px - 40px); /* viewport height minus header height and top+bottom padding */
+    overflow-y: auto;
+    padding-bottom: 10px;
+}
+
+
+
+/* Close button */
+.close-btn {
+    align-self: flex-end;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Room list with fixed width */
+.room-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 500px;
+}
+
+/* Room card styling */
+.room-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    background-color: #fafafa;
+}
+
+.room-card:hover {
+    background-color: #f5f5f5;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+/* Room image styling */
+.room-img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+/* Amenities modal - hidden by default */
+.amenities-modal {
+  display: none; /* Start hidden */
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 110px;
+  padding-left: 20px;
+  padding-right: 20px;
+  overflow-y: auto;
+}
+
+.amenities-modal.show {
+  display: flex; /* Only flex when .show is added */
+}
+
+
+
+/* Modal content box for amenities */
+.amenities-modal .modal-content {
+    background-color: #fff;
+    margin: auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 700px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Close button for amenities */
+.amenities-modal .close-btn {
+    align-self: flex-end;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+}
+
+#selected-amenities-ctnr div {
+  background-color: #007BFF;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 15px;
+  font-size: 13px;
+}
+
+#selected-amenities-ctnr {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.amenity-badge {
+  background-color: #007BFF;
+  color: red;
+  padding: 6px 10px;
+  border-radius: 15px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+}
+.pay{
+    background-color: rgb(9, 117, 9);
+    padding: 10px 10px;
+    color: white;
+
+}

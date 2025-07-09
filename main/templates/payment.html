@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Summary</title>
+    <link href="{{ url_for('static', filename='css/book_room.css') }}" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <a href="/"><img src="{{ url_for('static', filename='images/Moon_hotel_logo.png') }}" alt="Hotel Logo"></a>
+        <ul>
+            
+        </ul>
+    </div>
+
+    <!-- PAYMENT SUMMARY -->
+    <div class="first_section">
+        <div class="container">
+            <h2>Payment Summary</h2>
+            <br>
+            <p><strong>Room Type:</strong> {{ room.room_type }}</p>
+            <p><strong>Room Price (per night):</strong> ₱{{ room.price }}</p>
+            <p><strong>Check-in:</strong> {{ check_in }}</p>
+            <p><strong>Check-out:</strong> {{ check_out }}</p>
+            <p><strong>Number of Nights:</strong> {{ number_of_nights }}</p>
+            <p><strong>Room Total:</strong> ₱{{ room_total }}</p>
+
+            <br>
+            <h3>Amenities:</h3>
+            {% if selected_amenities %}
+                <ul>
+                    {% for amenity in selected_amenities %}
+                        <li>{{ amenity.amenity }} - ₱{{ amenity.price }}</li>
+                    {% endfor %}
+                </ul>
+                <p><strong>Amenities Total Price:</strong> ₱{{ total_amenity_price }}</p>
+            {% else %}
+                <p>No amenities selected.</p>
+            {% endif %}
+
+            <br>
+            <h2>Total Amount Due: ₱{{ total_price }}</h2>
+
+            <br><br>
+            <!-- Simulate Payment -->
+            <form method="POST" action="/confirm_payment">
+                <!-- Hidden inputs to pass necessary data to the backend -->
+            <input type="hidden" name="room_id" value="{{ room.id }}">
+            <input type="hidden" name="check_in" value="{{ check_in }}">
+            <input type="hidden" name="check_out" value="{{ check_out }}">
+            <input type="hidden" name="guest" value="{{ guest }}">
+            <input type="hidden" name="total_price" value="{{ total_price }}">
+
+            <!-- Properly passing amenity IDs as a list -->
+            <input type="hidden" name="amenity_ids" value="{{ selected_amenities|map(attribute='id')|join(' ') }}">
+            <img  class="img-payment" src="{{ url_for('static', filename='images/qr_maya.jpg') }}" alt="QR Code">
+                <button class="book-btn" type="submit">Confirm and Pay</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

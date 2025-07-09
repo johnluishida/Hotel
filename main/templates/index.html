@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Home</title>
+        <link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet">
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+        
+    </head>
+    <body>
+        <div class="header">
+            <a href="/"><img src="{{ url_for('static', filename='images/Moon_hotel_logo.png') }}"></a>
+            <ul>
+                <li><a href="/" class="active">Home</a></li>
+                <li><a href="/rooms">Rooms</a></li>
+                <li><a href="/amenities">Amenities</a></li>
+                <li><a href="/feedback">Feedback</a></li>
+                {% if is_logged_in %}
+                    <button onclick="location.href='/bookroom'" style="cursor: pointer; color: black;">Book now</button>
+                    <a href="/profile"><i class='bx bxs-user-circle user-icon'></i></a>
+                {% else %}
+                    <li style="padding-right: 20px;"><a href="/login">Login</a></li>
+                    <button onclick="location.href='/bookroom'" style="cursor: pointer; color: black;">Book now</button>
+                {% endif %}
+            </ul>
+        </div>
+        
+        <div class="first_section">
+            <section id="hero">
+                <div class="container_intro">
+                <h2>Moon Hotel</h2>
+                <p>Experience Over The Moon Comfort</p>
+                {% if is_logged_in %}
+                <a href="/bookroom" class="btn-get-started">Get Started</a>
+                {% else %}
+                <a href="/login" class="btn-get-started">Get Started</a>
+                {% endif %}
+                </div>
+            </section>
+        </div>
+        <br>
+        <div class="second_section">
+            <div class="section-title">
+                <h2>Rooms</h2>
+                <span>Rooms</span>
+            </div>
+         
+        
+            <div class="room-style">
+                {% for room in rooms[:3] %}
+                <a href="{{ url_for('moon_routes.rooms') }} "style="text-decoration: none; color: white;" ><div class="room-container" 
+                         data-room-type="{{ room.room_type }}"
+                         data-description="{{ room.description|e }}"
+                         data-price="{{ room.price }}"
+                         data-image="{{ url_for('static', filename='uploads/' ~ room.image) if room.image else '' }}"
+                         onclick="openModal(this)">
+            
+                        {% if room.image %}
+                            <center><img src="{{ url_for('static', filename='uploads/' ~ room.image) }}" alt="{{ room.room_type }} image"></center>
+                        {% endif %}
+                        <center><h3>{{ room.room_type }}</h3></center><br>
+                        <p>
+                            <strong>Description:</strong> 
+                            {{ room.description[:100] }}{% if room.description|length > 100 %}... <span class="see-more" style="color: blue;">See more</span>{% endif %}
+                        </p><br>
+                        <p><strong>Price:</strong> ₱{{ room.price }}</p></a>
+                        <button onclick="location.href='/bookroom'" class="btn">Book Now</button>
+                    </div>
+                {% endfor %}
+            
+                {% if rooms|length > 1 %}
+                <a href="{{ url_for('moon_routes.rooms') }} "style="text-decoration: none;" ><div class="room-container" style="display: flex; justify-content: center; align-items: center;">
+                        
+                            <h2 style="color: white;">See More Rooms →</h2>
+                    </div></a>
+                {% endif %}
+            </div>
+        </div>
+
+    {% if feedbacks %}
+    <div class="third_section">
+        <div class="section-title">
+            <h2>Feedback</h2>
+            <span>Feedback</span>
+        </div>
+
+        <div class="feedback-carousel-container">
+            <div class="feedback-carousel-wrapper" id="feedbackCarousel">
+                {% for i in range(0, feedbacks|length, 3) %}
+                    <div class="feedback-slide">
+                        {% for feedback in feedbacks[i:i+3] %}
+                            <div class="feedback-card">
+                                <p class="feedback-message">{{ feedback.message }}</p>
+
+                                <!-- Display rating stars -->
+                                <p class="feedback-rating">
+                                    {% for star in range(1, 6) %}
+                                        {% if star <= feedback.rating %}
+                                            <span style="color: gold;">&#9733;</span>
+                                        {% else %}
+                                            <span style="color: lightgray;">&#9733;</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </p>
+
+                                <p class="feedback-user">— {{ feedback.username }}</p>
+                                <p class="feedback-time">{{ feedback.submitted_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="carousel-bullets" id="carouselBullets">
+                {% for i in range(0, feedbacks|length, 3) %}
+                    <span class="bullet{% if loop.index0 == 0 %} active{% endif %}"></span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif%}
+
+        
+    </body>
+    <script>
+  const carousel = document.getElementById('feedbackCarousel');
+  const bullets = document.querySelectorAll('.bullet');
+  const totalSlides = bullets.length;
+  let currentIndex = 0;
+
+  function showSlide(index) {
+    const offset = -index * 100;
+    carousel.style.transform = `translateX(${offset}%)`;
+
+    bullets.forEach((b, i) => {
+      b.classList.toggle('active', i === index);
+    });
+  }
+
+  function nextSlide() {
+    currentIndex = (currentIndex + 1) % totalSlides;
+    showSlide(currentIndex);
+  }
+
+  // Auto-slide every 5 seconds
+  setInterval(nextSlide, 5000);
+
+  // Click bullet to navigate
+  bullets.forEach((bullet, index) => {
+    bullet.addEventListener('click', () => {
+      currentIndex = index;
+      showSlide(index);
+    });
+  });
+</script>
+
+</html>

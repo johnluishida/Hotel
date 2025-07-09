@@ -1,0 +1,146 @@
+/* Reset some basics */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 20px;
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/static/images/photo.webp') center center/cover no-repeat;
+  color: #333;
+  line-height: 1.5;
+}
+
+.booking-info {
+  max-width: 600px;
+  margin: 30px auto;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 0.05);
+}
+
+h2 {
+  text-align: center;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 25px;
+  letter-spacing: 1px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 30px;
+}
+
+li {
+  padding: 8px 0;
+  font-size: 1rem;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li strong {
+  color: #555;
+  min-width: 130px;
+  display: inline-block;
+}
+
+.amenity {
+  background-color: #007BFF;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  display: inline-block;
+  margin: 4px 6px 4px 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgb(0 123 255 / 0.4);
+  transition: background-color 0.3s ease;
+}
+
+.amenity:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 12px rgb(0 86 179 / 0.6);
+}
+
+.price-breakdown {
+  background-color: #f1f3f5;
+  padding: 20px 25px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #222;
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.1);
+  margin-bottom: 30px;
+}
+
+.price-breakdown p {
+  margin: 10px 0;
+}
+
+.price-breakdown hr {
+  border: none;
+  border-top: 2px solid #007BFF;
+  margin: 18px 0;
+}
+
+.price-breakdown strong {
+  font-size: 1.3rem;
+  color: #198754;
+}
+
+.img-payment {
+  display: block;
+  margin: 20px auto 0;
+  width: 180px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+}
+
+form {
+  text-align: center;
+}
+
+.btn-pay {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 14px 36px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 6px 10px rgb(40 167 69 / 0.4);
+}
+
+.btn-pay:hover {
+  background-color: #1e7e34;
+  box-shadow: 0 8px 14px rgb(30 126 52 / 0.6);
+}
+
+@media (max-width: 640px) {
+  .booking-info {
+    padding: 20px 25px;
+  }
+
+  li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  li strong {
+    margin-bottom: 5px;
+  }
+
+  .btn-pay {
+    width: 100%;
+    padding: 14px 0;
+  }
+}

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Rooms Management</title>
+        <link href="{{ url_for('static', filename='css/admin_room.css') }}" rel="stylesheet">
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    </head>
+    <body>
+         <!-- Header -->
+        <header class="fixed top-0 left-0 w-full h bg-color text-white flex items-center px-4 z-50" style="display: flex; align-items: center;">
+            <img src="{{ url_for('static', filename='images/Moon_hotel_logo.png') }}" class="header-img">
+            <button id="toggleSidebar" class="mr-4 bg-white burger-color px-3 py-1 rounded">☰</button>
+        </header>
+
+       <!-- Sidebar -->
+  <aside id="sidebar" class="fixed top-16 left-0 w-64 h-[calc(100%-4rem)] bg-white text-white transition-transform z-40"  style="height: calc(100% - 4rem); overflow-y: auto;">
+    <nav class="p-4">
+      <ul>
+        <li>
+          <a href="/admin"><i class='bx bxs-home icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Home</span></a>
+        </li>
+        <li>
+            <a href="/admin_users"><i class='bx bx-user icon-bg'></i>
+            <span class="sidebar-text burger-color sidebar-text-size">Users</span></a>
+        </li>
+        <li class="active">
+          <a href="/admin_rooms"><i class='bx bxs-bed icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Rooms</span></a>
+        </li>   
+        <li>
+          <a href="/admin_amenities"><i class='bx bx-plus-circle icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Amenities</span></a>
+        </li>  
+        <li>
+          <a href="/admin_booking"><i class='bx bxs-book icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Book</span></a>
+        </li>  
+        <li>
+          <a href="/admin_feedback"><i class='bx bxs-comment-detail icon-bg'></i> 
+          <span class="sidebar-text burger-color sidebar-text-size">Feedback</span></a>
+        </li>
+        <li style="position: absolute; bottom: 30px;">
+          <a href="/logout"><i class='bx bx-log-out icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Logout</span></a>
+        </li> 
+        
+    </ul>
+    </nav>
+  </aside>
+
+        <main id="mainContent" class="pt-16 px-4 transition-all content-shift">
+            <div class="container">
+                <h1>Room Management</h1>
+                {% for floor, rooms in rooms_by_floor.items() %}
+                    <h2>{{ floor }}</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Room Type</th>
+                                <th>Price</th>
+                                <th>Description</th>
+                                <th>Image</th>
+                                <th>Room No.</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for room in rooms %}
+                            <tr>
+                                <td>{{ room.room_type }}</td>
+                                <td>{{ room.price }}</td>
+                                <td>{{ room.description }}</td>
+                                <td>
+                                    {% if room.image %}
+                                        <img src="{{ url_for('static', filename='uploads/' + room.image) }}" alt="Room Image" style="width: 100px;">
+                                    {% else %}
+                                        No image
+                                    {% endif %}
+                                </td>
+                                <td>{{ room.room_number }}</td>
+                                <td>
+                                    {% if room.status == 'booked' %}
+                                        <span style="color: red; font-weight: bold;">Booked</span>
+                                    {% elif room.status == 'available' %}
+                                        <span style="color: green; font-weight: bold;">Available</span>
+                                    {% elif room.status == 'maintenance' %}
+                                        <span style="color: orange; font-weight: bold;">Maintenance</span>
+                                    {% elif room.status == 'cancelled' %}
+                                        <span style="color: gray; font-weight: bold;">Cancelled</span>
+                                    {% else %}
+                                        <span>{{ room.status }}</span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if room.status == 'booked' %}
+                                        <h4>Unavailable</h4>
+                                    {% else %}
+                                    <button class="editBtn btn btn-warning btn-sm"
+                                    data-id="{{ room.id }}"
+                                    data-room_type="{{ room.room_type }}"
+                                    data-floor="{{ room.floor }}"
+                                    data-description="{{ room.description }}"
+                                    data-price="{{ room.price }}"
+                                    data-status="{{ room.status }}">
+                                Edit
+                            </button> |
+
+                            <a href="{{ url_for('moon_routes.delete_room', room_id=room.id) }}" 
+                            class="delete-button" 
+                            onclick="return confirm('Are you sure you want to delete this room?');">
+                            Delete
+                         </a>
+                                    {% endif %}
+                                   
+                                 
+                                </td>
+                            </tr>
+                            {% else %}
+                            <h3>Unavailable</h3>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <br>
+                    {% else %}
+                    <h1>No rooms</h1>
+                {% endfor %}
+
+                <!--Add New Room-->
+                <button class="addroom" id="addRoomBtn">Add Room</button>
+                <div id="roomModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        
+                        <!-- Your Room Form -->
+                        <form action="/add_room" method="POST" enctype="multipart/form-data">
+                            <br><br>
+                            <label for="room_type">Room Type:</label>
+                            <select id="room_type" name="room_type">
+                            <option value="" disabled selected>Select Room</option>
+                            <option value="Single Room">Single Room</option>
+                            <option value="Double Room">Double Room</option>
+                            <option value="Twin Room">Twin Room</option>
+                            <option value="Family Room">Family Room</option>
+                            <option value="Accessible Room">Accessible Room</option>
+                            <option value="Deluxe Room">Deluxe Room</option>
+                            <option value="Executive Suit">Executive Suit</option>
+                            
+                            </select>
+                            <br>
+                    
+                            <label for="floor">Floor:</label>
+                            <select id="floor" name="floor">
+                            <option value="" disabled selected>Select Floor</option>
+                            <option value="1st Floor">1st Floor</option>
+                            <option value="2nd Floor">2nd Floor</option>
+                            <option value="3rd Floor">3rd Floor</option>
+                            <option value="4th Floor">4th Floor</option>
+                            </select>
+                            <br>
+                    
+                            <label for="description">Description:</label>
+                            <textarea id="description" name="description"></textarea>
+                            <br>
+                    
+                            <label for="price">Price</label>
+                            <input type="number" id="price" name="price">
+                            <br>
+                    
+                            
+                            <label for="upload_image">Upload Image</label>
+                            <input type="file" id="upload_image" name="image" class="custom-file-upload"><br><br>
+                            <input type="submit" value="Add Room">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Edit Room Modal -->
+<div id="editRoomModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="editClose">&times;</span>
+        <form id="editRoomForm" method="POST" enctype="multipart/form-data">
+            <input type="hidden" id="editRoomId" name="room_id">
+
+            <label for="edit_room_type">Room Type:</label>
+            <select id="edit_room_type" name="room_type">
+                <option value="" disabled>Select Room</option>
+                <option value="Single Room">Single Room</option>
+                <option value="Double Room">Double Room</option>
+                <option value="Twin Room">Twin Room</option>
+                <option value="Family Room">Family Room</option>
+                <option value="Accessible Room">Accessible Room</option>
+                <option value="Deluxe Room">Deluxe Room</option>
+                <option value="Executive Suit">Executive Suit</option>
+            </select><br>
+
+            <label for="edit_floor">Floor:</label>
+            <select id="edit_floor" name="floor">
+                <option value="1st Floor">1st Floor</option>
+                <option value="2nd Floor">2nd Floor</option>
+                <option value="3rd Floor">3rd Floor</option>
+                <option value="4th Floor">4th Floor</option>
+            </select><br>
+
+            <label for="edit_description">Description:</label>
+            <textarea id="edit_description" name="description"></textarea><br>
+
+            <label for="edit_price">Price:</label>
+            <input type="number" id="edit_price" name="price"><br>
+
+            <label for="edit_status">Status:</label>
+            <select id="edit_status" name="status">
+                <option value="available">Available</option>
+                <option value="maintenance">Maintenance</option>
+            </select><br>
+
+            <label for="edit_image">Update Image</label>
+            <input type="file" id="edit_image" name="image" class="custom-file-upload"><br><br>
+
+            <button type="submit" class="submit-btn">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+
+        </main>
+
+        <script src="{{ url_for('static', filename='js/admin_rooms.js') }}"></script>
+    </body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="{{ url_for('static', filename='css/paymet.css') }}" rel="stylesheet">
+  <title>Confirm Booking & Payment</title>
+  <style>
+    /* Simple styles for clarity */
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .booking-info { max-width: 600px; margin: auto; border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
+    h2 { text-align: center; }
+    ul { list-style: none; padding: 0; }
+    li { padding: 5px 0; }
+    .amenity { background-color: #007BFF; color: white; padding: 5px 10px; border-radius: 12px; display: inline-block; margin: 3px; }
+    .btn-pay { background-color: #28a745; color: white; border: none; padding: 10px 20px; font-size: 1.1em; cursor: pointer; border-radius: 5px; }
+    .price-breakdown { margin-top: 20px; font-weight: bold; }
+    .img-payment{ width: 200px; height: auto; }
+  </style>
+</head>
+<body>
+  <div class="booking-info">
+    <h2>Confirm Your Booking</h2>
+    <ul>
+      <li><strong>Room Type:</strong> {{ room_type or "N/A" }}</li>
+      <li><strong>Check-in Date:</strong> {{ check_in }}</li>
+      <li><strong>Check-out Date:</strong> {{ check_out }}</li>
+      <li><strong>Number of Guests:</strong> {{ guest }}</li>
+      <li><strong>Selected Amenities:</strong> 
+        {% if amenities %}
+          <div>
+            {% for amenity in amenities %}
+              <span class="amenity">{{ amenity.amenity }} (₱{{ "%.2f"|format(amenity.price) }})</span>
+            {% endfor %}
+          </div>
+        {% else %}
+          None
+        {% endif %}
+      </li>
+    </ul>
+
+    <div class="price-breakdown">
+      <p>Room price per night: ₱{{ "%.2f"|format(room_price) }}</p>
+      <p>Number of nights: {{ nights }}</p>
+      <p>Amenities total: ₱{{ "%.2f"|format(amenities_total) }}</p>
+      <hr>
+      <p><strong>Total Price: ₱{{ "%.2f"|format(total_price) }}</strong></p>
+      <img  class="img-payment" src="{{ url_for('static', filename='images/qr_maya.jpg') }}" alt="QR Code">
+    </div>
+
+    <form method="POST" action="{{ url_for('moon_routes.payment_confirm') }}">
+      <input type="hidden" name="room_id" value="{{ room_id }}">
+      <input type="hidden" name="check_in" value="{{ check_in }}">
+      <input type="hidden" name="check_out" value="{{ check_out }}">
+      <input type="hidden" name="guest" value="{{ guest }}">
+      <input type="hidden" name="amenity_ids" value="{% for a in amenities %}{{ a.id }}{% if not loop.last %},{% endif %}{% endfor %}">
+      <input type="hidden" name="total_price" value="{{ total_price }}">
+      <button type="submit" class="btn-pay">Confirm and Pay</button>
+    </form>
+  </div>
+</body>
+</html>

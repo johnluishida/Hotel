@@ -1,0 +1,84 @@
+body {
+    padding: 0;
+    margin: 0;
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/static/images/photo.webp') center center/cover no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+.first_section {
+    width: 100%;
+    display: flex;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    justify-content: center;
+    align-items: center;
+}
+
+.first_section .container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 50px 50px;
+    padding-right: 65px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    color: #ffffff;
+    width: 350px;
+    text-align: center;
+}
+
+.first_section .container h1 {
+    margin-bottom: 20px;
+    font-size: 2rem;
+    letter-spacing: 1px;
+}
+
+input[type="text"],
+input[type="number"],
+textarea[id="address"],
+input[type="email"],
+input[type="password"],
+button {
+    width: 100%;
+    padding: 12px;
+    margin: 15px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+input[type="text"],
+input[type="number"],
+textarea[id="address"],
+input[type="email"],
+input[type="password"] {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    outline: none;
+}
+
+input::placeholder {
+    color: #ccc;
+}
+
+button {
+    background-color: #ffce00;
+    color: #fff;
+    cursor: pointer;
+    width: 280px;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background-color: yellow;
+}
+a{
+    color: #00BFFF;
+}
+a:hover{
+    color: #FFFFFF;
+    text-decoration: none;
+}

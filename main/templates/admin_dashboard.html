@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <link href="{{ url_for('static', filename='css/admin_dashboard.css') }}" rel="stylesheet">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body class="color">
+
+  <!-- Header -->
+  <header class="fixed top-0 left-0 w-full h bg-color text-white flex items-center px-4 z-50" style="display: flex; align-items: center;">
+    <img src="{{ url_for('static', filename='images/Moon_hotel_logo.png') }}" class="header-img">
+    <button id="toggleSidebar" class="mr-4 bg-white burger-color px-3 py-1 rounded pointer-buger">☰</button>
+  </header>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed top-16 left-0 w-64 h-[calc(100%-4rem)] bg-white text-white transition-transform z-40"  style="height: calc(100% - 4rem); overflow-y: auto;">
+    <nav class="p-4">
+      <ul>
+        <li class="active">
+          <a href="/admin"><i class='bx bxs-home icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Home</span></a>
+        </li>
+        <li>
+          <a href="/admin_users"><i class='bx bx-user icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Users</span></a>
+        </li>
+        <li>
+          <a href="/admin_rooms"><i class='bx bxs-bed icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Rooms</span></a>
+        </li>   
+        <li>
+          <a href="/admin_amenities"><i class='bx bx-plus-circle icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Amenities</span></a>
+        </li>  
+        <li>
+          <a href="/admin_booking"><i class='bx bxs-book icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Book</span></a>
+        </li>   
+        <li>
+          <a href="/admin_feedback"><i class='bx bxs-comment-detail icon-bg'></i> 
+          <span class="sidebar-text burger-color sidebar-text-size">Feedback</span></a>
+        </li>   
+        <li style="position: absolute; bottom: 30px;">
+          <a href="/logout">
+            <i class='bx bx-log-out icon-bg'></i>
+            <span class="sidebar-text burger-color sidebar-text-size">Logout</span>
+          </a>
+        </li>
+        
+    </ul>
+    </nav>
+  </aside>
+
+  
+  <main id="mainContent" class="pt-16 px-4 transition-all content-shift">
+    <div style="display: flex; gap: 20px; margin-top: 30px; flex-wrap: wrap;">
+      
+      <div class="container-info">
+        <center><h3 style="color: white;">Total Registered Users</h3>
+        <p style="font-size: 24px; font-weight: bold; color: #4caf50;">{{ total_users }}</p></center>
+        <button onclick="location.href='admin_users'" class="btn">View</button>
+      </div>
+      
+      <div class="container-info">
+        <center><h3 style="color: white;">Total Rooms Booked</h3>
+      <p style="font-size: 24px; font-weight: bold; color: #2196f3;">{{ total_booked }}</p></center>
+      <button onclick="location.href='admin_booking'" class="btn">View</button>
+      </div>
+      
+      <div class="container-info">
+        <center><h3 style="color: white;">Rooms Available</h3>
+        <p style="font-size: 24px; font-weight: bold; color: #f44336;">{{ total_available }}</p></center>
+        <button onclick="location.href='admin_rooms'" class="btn">View</button>
+      </div>
+      
+  
+    </div>
+  </main>
+  
+  
+  <script src="{{ url_for('static', filename='js/admin_dashboard.js') }}"></script>
+
+</body>
+</html>

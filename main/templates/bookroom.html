@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Book</title>
+        <link href="{{ url_for('static', filename='css/bookroom.css') }}" rel="stylesheet">
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    </head>
+    <body>
+        <div class="header">
+          <a href="/"><img src="{{ url_for('static', filename='images/Moon_hotel_logo.png') }}"></a>
+          <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/rooms">Rooms</a></li>
+                <li><a href="/amenities">Amenities</a></li>
+                <li><a href="/feedback">Feedback</a></li>
+                {% if is_logged_in %}
+                    <button onclick="location.href='/bookroom'" style="cursor: pointer; color: black;">Book now</button>
+                    <a href="/profile"><i class='bx bxs-user-circle user-icon'></i></a>
+                {% else %}
+                    <li style="padding-right: 20px;"><a href="/login">Login</a></li>
+                    <button onclick="location.href='/bookroom'" style="cursor: pointer; color: black;">Book now</button>
+                {% endif %}
+            </ul>
+        </div> 
+        
+        <div class="first_section">
+            <div class="container">
+                     <center><h2>Book a Room</h2></center><br>
+            <form method="POST" action="/payment_book" id="booking-form">
+                <input type="hidden" name="room_id" id="hidden-room-id">
+                <input type="hidden" name="room_type" id="hidden-room-type">
+                <input type="hidden" name="amenity_ids" id="hidden-amenity-ids">
+            
+                <label class="lbl">Room Type:</label>
+                <div id="choose-room-container">
+                    <div class="input-with-button">
+                        <input type="text" class="input-field" id="selected-room" readonly placeholder="Choose Room Type">
+                        <button type="button" class="room-type-btn" id="choose-room-btn">Choose</button>
+                    </div>
+                </div>
+                <br>
+                <!-- Room Selection Modal -->
+                <div id="roomModal" class="modal">
+                <div style="background-color: #0d3b63;color: white;" class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <h3 style="color: black;">Available Rooms</h3>
+                    <div class="room-list">
+                    {% for room in available_rooms %}
+                    <div class="room-card" onclick="selectRoom('{{ room.id }}', '{{ room.room_type }}')">
+                        {% if room.image %}
+                            <img src="{{ url_for('static', filename='uploads/' + room.image) }}" alt="Room Image" class="room-img">
+                        {% else %}
+                        <h1>No Image.</h1>
+                        {% endif %}
+                        <h4 style="color: black;">{{ room.room_type }} - Room {{ room.room_number }}</h4>
+                        <p style="color: black;"><strong>Floor:</strong> {{ room.floor }}</p>
+                        <p style="color: black;"><strong>Price:</strong> ₱{{ room.price }}</p>
+                        <p style="color: black;"><strong>description:</strong>{{ room.description }}</p>
+                    </div>
+                    {% else %}
+                    <h1>No Available Rooms.</h1>
+                    {% endfor %}
+                    </div>
+                </div>
+                </div>
+            
+                <label class="lbl">Check-in:</label>
+<input type="date" name="check_in" class="input-field" required
+       value="{{ form_data.check_in if form_data and form_data.check_in else '' }}"><br>
+{% if errors and errors.error_checkin %}
+    <div class="error-message">{{ errors.error_checkin }}</div>
+{% endif %}
+<br>
+
+<label class="lbl">Check-out:</label>
+<input type="date" name="check_out" class="input-field" required
+       value="{{ form_data.check_out if form_data and form_data.check_out else '' }}"><br>
+{% if errors and errors.error_checkout %}
+    <div class="error-message">{{ errors.error_checkout }}</div>
+{% endif %}
+<br>
+            
+                <label class="lbl">Amenities:</label>
+                <button type="button" class="amenities-type-btn">Choose Amenities</button><br><br>
+                <div class="amenities-ctnr" id="amenities-ctnr">
+                    <div id="selected-amenities-ctnr"></div>
+                </div><br><br>
+
+                <div id="amenitiesModal" class="amenities-modal">
+                <div class="modal-content">
+                    <span class="close-btn" id="closeAmenitiesModal">&times;</span>
+                    <h2 style="color: black;">Select Amenities</h2>
+                    <div id="amenitiesList">
+                    {% for amenity in amenities %}
+                        <div>
+                        <input type="checkbox" id="amenity{{ amenity.id }}" name="amenities" value="{{ amenity.id }} style="color: black;">
+                        <label for="amenity{{ amenity.id }}" style="color: black;">{{ amenity.amenity }} - ${{ "%.2f"|format(amenity.price) }}</label>
+                        <p style="color: black;" >{{ amenity.description }}</p>
+                        </div>
+                    {% endfor %}
+                    </div>
+
+                    <button id="saveAmenitiesBtn" class="book-btn" type="button">Save</button>
+                </div>
+                </div>
+
+            
+               
+<label class="lbl">Number of Guests:</label>
+<input type="number" name="guest" class="input-field" min="1" required
+       value="{{ form_data.guest if form_data and form_data.guest else '' }}"><br>
+{% if errors and errors.error_guest %}
+    <div class="error-message">{{ errors.error_guest }}</div>
+{% endif %}
+<br>
+            
+                <button class="pay" type="submit">Proceed to Payment</button>
+            </form>       
+            </div>
+            
+
+        </div>
+    </body>
+    <script>
+  const modal = document.getElementById("roomModal");
+const btn = document.getElementById("choose-room-btn");
+const span = document.getElementsByClassName("close-btn")[0];
+
+btn.onclick = function () {
+  modal.classList.add("show");
+};
+
+span.onclick = function () {
+  modal.classList.remove("show");
+};
+
+// Amenities modal elements
+const amenitiesModal = document.getElementById("amenitiesModal");
+const amenitiesBtns = document.querySelectorAll(".amenities-type-btn");
+const closeAmenitiesBtn = document.getElementById("closeAmenitiesModal");
+const saveAmenitiesBtn = document.getElementById("saveAmenitiesBtn");
+
+// Open amenities modal when any button with .amenities-type-btn is clicked
+amenitiesBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    amenitiesModal.classList.add("show");
+  });
+});
+
+// Close amenities modal when close button clicked
+closeAmenitiesBtn.onclick = () => {
+  console.log("Close button clicked!");
+  amenitiesModal.classList.remove("show");
+};
+
+
+// Close modals when clicking outside their content
+window.onclick = function(event) {
+  if (event.target === modal) {
+    modal.classList.remove("show");
+  } else if (event.target === amenitiesModal) {
+    amenitiesModal.classList.remove("show");
+  }
+};
+
+function selectRoom(roomId, roomType) {
+  document.getElementById("hidden-room-id").value = roomId;
+  document.getElementById("hidden-room-type").value = roomType;  // <-- add this line
+  document.getElementById("selected-room").value = roomType;
+  modal.classList.remove("show");
+}
+
+
+// Save button functionality - customize as needed
+saveAmenitiesBtn.onclick = () => {
+  const container = document.getElementById("selected-amenities-ctnr");
+  const hiddenAmenityInput = document.getElementById("hidden-amenity-ids");
+
+  // Clear previous displayed badges
+  container.innerHTML = "";
+
+  // Collect selected IDs
+  let selectedIds = [];
+
+  // Loop through checked checkboxes
+  document.querySelectorAll("#amenitiesList input[type='checkbox']:checked").forEach(checkbox => {
+    const badge = document.createElement("div");
+    badge.classList.add("amenity-badge");
+    badge.textContent = checkbox.nextElementSibling.textContent;
+
+    // Store id
+    const amenityId = checkbox.value;
+    badge.dataset.amenityId = amenityId;
+    selectedIds.push(amenityId);
+
+    const removeBtn = document.createElement("span");
+    removeBtn.textContent = " ✕";
+    removeBtn.style.marginLeft = "8px";
+    removeBtn.style.cursor = "pointer";
+    removeBtn.style.fontWeight = "bold";
+    removeBtn.style.color = "#fff";
+
+    removeBtn.onclick = () => {
+      checkbox.checked = false;
+      badge.remove();
+      // Remove this id from selectedIds array
+      selectedIds = selectedIds.filter(id => id !== amenityId);
+      hiddenAmenityInput.value = selectedIds.join(",");
+    };
+
+    badge.appendChild(removeBtn);
+    container.appendChild(badge);
+  });
+
+  // Update hidden input value as CSV string
+  hiddenAmenityInput.value = selectedIds.join(",");
+
+  amenitiesModal.classList.remove("show");
+};
+
+
+
+
+
+
+window.onload = () => {
+  modal.classList.remove("show");
+  amenitiesModal.classList.remove("show");
+};
+
+</script>
+
+</html>

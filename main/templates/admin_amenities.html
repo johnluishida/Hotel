@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amenities Management</title>
+    <link href="{{ url_for('static', filename='css/admin_amenities.css') }}" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+     <!-- Header -->
+     <header class="fixed top-0 left-0 w-full h bg-color text-white flex items-center px-4 z-50" style="display: flex; align-items: center;">
+        <img src="{{ url_for('static', filename='images/Moon_hotel_logo.png') }}" class="header-img">
+        <button id="toggleSidebar" class="mr-4 bg-white burger-color px-3 py-1 rounded">☰</button>
+    </header>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed top-16 left-0 w-64 h-[calc(100%-4rem)] bg-white text-white transition-transform z-40"  style="height: calc(100% - 4rem); overflow-y: auto;">
+        <nav class="p-4">
+          <ul>
+            <li >
+              <a href="/admin"><i class='bx bxs-home icon-bg'></i>
+              <span class="sidebar-text burger-color sidebar-text-size">Home</span></a>
+            </li>
+            <li>
+              <a href="/admin_users"><i class='bx bx-user icon-bg'></i>
+              <span class="sidebar-text burger-color sidebar-text-size">Users</span></a>
+            </li>
+            <li>
+              <a href="/admin_rooms"><i class='bx bxs-bed icon-bg'></i>
+              <span class="sidebar-text burger-color sidebar-text-size">Rooms</span></a>
+            </li>   
+            <li class="active">
+              <a href="/admin_amenities"><i class='bx bx-plus-circle icon-bg'></i>
+              <span class="sidebar-text burger-color sidebar-text-size">Amenities</span></a>
+            </li>  
+            <li>
+              <a href="/admin_booking"><i class='bx bxs-book icon-bg'></i>
+              <span class="sidebar-text burger-color sidebar-text-size">Book</span></a>
+            </li>
+            <li>
+              <a href="/admin_feedback"><i class='bx bxs-comment-detail icon-bg'></i> 
+              <span class="sidebar-text burger-color sidebar-text-size">Feedback</span></a>
+            </li>
+            <li style="position: absolute; bottom: 30px;">
+              <a href="/logout"><i class='bx bx-log-out icon-bg'></i>
+              <span class="sidebar-text burger-color sidebar-text-size">Logout</span></a>
+            </li> 
+            
+        </ul>
+        </nav>
+      </aside>
+
+    <main id="mainContent" class="pt-16 px-4 transition-all content-shift">
+
+    <h1>Amenities Management</h1>
+    {% if amenities %}
+<table border="1" cellpadding="10" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Amenity</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in amenities %}
+        <tr>
+            <td>{{ item.amenity }}</td>
+            <td>{{ item.description }}</td>
+            <td>₱{{ "%.2f"|format(item.price) }}</td>
+            <td>
+                <!-- Edit Button that triggers the modal -->
+                <button class="editBtn" 
+                        data-id="{{ item.id }}" 
+                        data-amenity="{{ item.amenity }}" 
+                        data-description="{{ item.description }}" 
+                        data-price="{{ item.price }}">
+                    Edit
+                </button> |
+                
+                <!-- Delete Button -->
+                <a href="{{ url_for('moon_routes.delete_amenity', amenity_id=item.id) }}" class="delete">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <h1>No amenities available.</h1>
+{% endif %}
+
+
+    <!-- Button to trigger the modal -->
+<!-- Button to open the modal -->
+<button id="addAmenityBtn" class="addamenity">Add Amenity</button>
+
+<!-- Modal structure -->
+<div id="addAmenityModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+   
+    <form action="{{ url_for('moon_routes.add_amenities') }}" method="POST">
+      <h2 style="color: white;">Add New Amenity</h2>
+      <div class="mb-3">
+        <label for="amenity">Amenity:</label>
+        <input type="text" id="amenity" name="amenity" placeholder="Name of Amenity" required class="form-control">
+      </div>
+
+      <div class="mb-3">
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" placeholder="Please put Description" class="form-control"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" placeholder="Please put the Price" class="form-control">
+      </div>
+
+      <div style="text-align: right;">
+        <input type="submit" value="Add Amenity" class="btn btn-primary">
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Amenity Modal -->
+<div id="editAmenityModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    
+    <form action="{{ url_for('moon_routes.edit_amenity') }}" method="POST">
+      <h2 style="color: white;">Edit Amenity</h2>
+      <input type="hidden" id="editAmenityId" name="amenity_id">
+      
+      <div class="mb-3">
+        <label for="editAmenity">Amenity:</label>
+        <input type="text" id="editAmenity" name="amenity" required class="form-control">
+      </div>
+
+      <div class="mb-3">
+        <label for="editDescription">Description:</label>
+        <textarea id="editDescription" name="description" class="form-control"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="editPrice">Price:</label>
+        <input type="number" id="editPrice" name="price" class="form-control">
+      </div>
+
+      <div style="text-align: right;">
+        <input type="submit" value="Save Changes" class="btn btn-primary">
+      </div>
+    </form>
+  </div>
+</div>
+
+    
+</body>
+<script src="{{ url_for('static', filename='js/admin_amenities.js') }}"></script>
+</html>

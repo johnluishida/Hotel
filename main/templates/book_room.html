@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book</title>
+    <link href="{{ url_for('static', filename='css/book_room.css') }}" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <a href="/"><img src="{{ url_for('static', filename='images/Moon_hotel_logo.png') }}"></a>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/rooms">Rooms</a></li>
+            <li><a href="/amenities">Amenities</a></li>
+            {% if is_logged_in %}
+                <button><a href="/book_room" style="text-decoration: none; color: black;">Book now</a></button>
+                <a href="/profile"><i class='bx bxs-user-circle user-icon'></i></a>
+            {% else %}
+                <li style="padding-right: 20px;"><a href="/login">Login</a></li>
+                <button><a href="/book_room" style="text-decoration: none; color: black;">Book now</a></button>
+            {% endif %}
+        </ul>
+    </div>
+
+    <!-- BOOKING FORM -->
+    <div class="first_section">
+        <div class="container">
+            <center><h2>Book a Room</h2></center><br>
+            <form method="POST" action="/payment" id="booking-form">
+                <input type="hidden" name="room_id" id="hidden-room-id">
+                <input type="hidden" name="amenity_ids" id="hiddenAmenityIds">
+            
+                <label class="lbl">Room Type:</label>
+                <div id="choose-room-container">
+                    <div class="input-with-button">
+                        <input type="text" class="input-field" id="selected-room" readonly placeholder="Choose Room Type">
+                        <button type="button" class="room-type-btn" id="choose-room-btn">Choose</button>
+                    </div>
+                </div>
+                <br>
+            
+                <label class="lbl">Check-in:</label>
+                <input type="date" name="check_in" class="input-field" required><br>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category == 'error_checkin' %}
+                        <div class="error-message">{{ message }}</div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}<br>
+            
+                <label class="lbl">Check-out:</label>
+                <input type="date" name="check_out" class="input-field" required><br>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            {% if category == 'error_checkout' %}
+                            <div class="error-message">{{ message }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}<br>
+            
+                <label class="lbl">Amenities:</label>
+                <button type="button" class="amenities-type-btn">Choose Amenities</button><br><br>
+                <div class="amenities-ctnr" id="amenities-ctnr">
+                    <div id="selected-amenities-ctnr"></div>
+                </div><br><br>
+            
+                <label class="lbl">Number of Guests:</label>
+                <input type="number" name="guest" class="input-field" min="1" required><br>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            {% if category == 'error_guest' %}
+                            <div class="error-message">{{ message }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}<br>
+            
+                <button class="book-btn" type="submit">Book</button>
+            </form>            
+        </div>        
+    </div>
+    
+    <!-- Room Modal -->
+    <div class="modal" id="room-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Choose Room Type</h3>
+                <span class="close" id="close-room-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                {% for room in available_rooms %}
+                    <div class="room-container" 
+                        data-room-id="{{ room.id }}"
+                        data-room-type="{{ room.room_type }}"
+                        data-price="{{ room.price }}"
+                        data-image="{{ url_for('static', filename='uploads/' ~ room.image) if room.image else '' }}">
+                        <h3>{{ room.room_type }}</h3>
+                        <h3>{{ room.room_number }}</h3>
+                        <h3>{{ room.floor }}</h3>
+                        <p>Price: ₱{{ room.price }}</p>
+                    </div>
+                {% else %}
+                    <h1>No Available Rooms.</h1>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Amenities Modal -->
+<div class="modal" id="amenities-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Choose Amenities</h3>
+            <span class="close" id="close-amenities-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            {% for amenity in amenities %}
+                <div class="amenities-container" 
+                    data-id="{{ amenity.id }}"
+                    data-amenity="{{ amenity.amenity }}"
+                    data-price="{{ amenity.price }}">
+                    <input type="checkbox" class="amenity-checkbox" data-id="{{ amenity.id }}" data-price="{{ amenity.price }}">
+                    <label>{{ amenity.amenity }} - ₱{{ amenity.price }}</label>
+                </div>
+            {% else %}
+                <h1>No Available Amenities.</h1>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+    
+</body>
+<script>
+    // Room Modal
+const modal = document.getElementById("room-modal");
+const chooseRoomBtn = document.getElementById("choose-room-btn");
+const closeRoomModal = document.getElementById("close-room-modal");
+const selectedRoomInput = document.getElementById("selected-room");
+const hiddenRoomId = document.getElementById("hidden-room-id");
+
+chooseRoomBtn.addEventListener("click", function() {
+    modal.style.display = "flex";
+});
+
+closeRoomModal.addEventListener("click", function() {
+    modal.style.display = "none";
+});
+
+window.addEventListener("click", function(event) {
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+});
+
+const roomContainers = document.querySelectorAll('.room-container');
+roomContainers.forEach(room => {
+    room.addEventListener('click', function() {
+        const roomType = room.getAttribute('data-room-type');
+        const roomId = room.getAttribute('data-room-id');
+        selectedRoomInput.value = roomType;
+        hiddenRoomId.value = roomId;
+        modal.style.display = "none";
+    });
+});
+
+const amenitiesModal = document.getElementById("amenities-modal");
+const amenitiesBtn = document.querySelector(".amenities-type-btn");
+const closeAmenitiesModal = document.getElementById("close-amenities-modal");
+const selectedAmenitiesContainer = document.getElementById("selected-amenities-ctnr");
+const hiddenAmenityIds = document.getElementById("hiddenAmenityIds");
+
+// Open Amenities Modal
+amenitiesBtn.addEventListener("click", function () {
+    amenitiesModal.style.display = "flex";
+});
+
+// Close Modal
+closeAmenitiesModal.addEventListener("click", function () {
+    amenitiesModal.style.display = "none";
+});
+
+window.addEventListener("click", function (event) {
+    if (event.target === amenitiesModal) {
+        amenitiesModal.style.display = "none";
+    }
+});
+
+// Track selected IDs
+let selectedAmenityIds = [];
+
+document.querySelectorAll('.amenities-container').forEach(amenity => {
+    amenity.addEventListener('click', function () {
+        const amenityName = amenity.getAttribute('data-amenity');
+        const amenityPrice = amenity.getAttribute('data-price');
+        const amenityId = amenity.getAttribute('data-id');
+
+        // Prevent duplicate selection
+        if (selectedAmenityIds.includes(amenityId)) return;
+
+        // Add to selected list
+        selectedAmenityIds.push(amenityId);
+        hiddenAmenityIds.value = selectedAmenityIds.join(",");
+
+        // Create visual tag
+        const selectedAmenity = document.createElement("div");
+        selectedAmenity.classList.add("selected-amenity");
+        selectedAmenity.setAttribute("data-amenity-id", amenityId);
+        selectedAmenity.innerHTML = `
+            <span>${amenityName} - ₱${amenityPrice}</span>
+            <button class="remove-amenity-btn">Remove</button>
+        `;
+
+        // Remove button logic
+        selectedAmenity.querySelector(".remove-amenity-btn").addEventListener("click", function () {
+            selectedAmenity.remove();
+            selectedAmenityIds = selectedAmenityIds.filter(id => id !== amenityId);
+            hiddenAmenityIds.value = selectedAmenityIds.join(",");
+        });
+
+        selectedAmenitiesContainer.appendChild(selectedAmenity);
+        amenitiesModal.style.display = "none";
+    });
+});
+</script>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <link href="{{ url_for('static', filename='css/admin_feedback.css') }}" rel="stylesheet">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body class="color">
+
+  <!-- Header -->
+  <header class="fixed top-0 left-0 w-full h bg-color text-white flex items-center px-4 z-50" style="display: flex; align-items: center;">
+    <img src="{{ url_for('static', filename='images/Moon_hotel_logo.png') }}" class="header-img">
+    <button id="toggleSidebar" class="mr-4 bg-white burger-color px-3 py-1 rounded pointer-buger">☰</button>
+  </header>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed top-16 left-0 w-64 h-[calc(100%-4rem)] bg-white text-white transition-transform z-40"  style="height: calc(100% - 4rem); overflow-y: auto;">
+    <nav class="p-4">
+      <ul>
+        <li >
+          <a href="/admin"><i class='bx bxs-home icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Home</span></a>
+        </li>
+        <li>
+          <a href="/admin_users"><i class='bx bx-user icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Users</span></a>
+        </li>
+        <li>
+          <a href="/admin_rooms"><i class='bx bxs-bed icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Rooms</span></a>
+        </li>   
+        <li>
+          <a href="/admin_amenities"><i class='bx bx-plus-circle icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Amenities</span></a>
+        </li>  
+        <li>
+          <a href="/admin_booking"><i class='bx bxs-book icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Book</span></a>
+        </li>   
+        <li class="active">
+          <a href="/admin_feedback"><i class='bx bxs-comment-detail icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Feedback</span></a>
+        </li>   
+        <li style="position: absolute; bottom: 30px;">
+          <a href="/logout">
+            <i class='bx bx-log-out icon-bg'></i>
+            <span class="sidebar-text burger-color sidebar-text-size">Logout</span>
+          </a>
+        </li>
+        
+    </ul>
+    </nav>
+  </aside>
+
+  
+  <main id="mainContent" class="pt-16 px-4 transition-all content-shift">
+  <h2>User Feedback</h2>
+
+<table border="1" cellpadding="10" cellspacing="0">
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Message</th>
+      <th>Rating</th> <!-- NEW -->
+      <th>Submitted At</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if feedback_list %}
+      {% for feedback in feedback_list %}
+        <tr>
+          <td>{{ feedback.username }}</td>
+          <td>{{ feedback.message }}</td>
+          <td>
+            {% for i in range(1, 6) %}
+              {% if i <= feedback.rating %}
+                <span style="color: gold;">&#9733;</span> <!-- filled star -->
+              {% else %}
+                <span style="color: lightgray;">&#9733;</span> <!-- empty star -->
+              {% endif %}
+            {% endfor %}
+          </td>
+          <td>{{ feedback.submitted_at }}</td>
+          <td>{{ feedback.status|capitalize }}</td>
+          <td>
+            {% if feedback.status != 'accepted' %}
+              <a style="text-decoration: none;" href="{{ url_for('moon_routes.accept_feedback', feedback_id=feedback.id) }}" class="btn1">Accept</a>
+            {% endif %}
+            {% if feedback.status != 'rejected' %}
+              <a style="text-decoration: none;" href="{{ url_for('moon_routes.reject_feedback', feedback_id=feedback.id) }}" class="btn2">Reject</a>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    {% else %}
+      <tr><td colspan="6">No feedback submitted yet.</td></tr>
+    {% endif %}
+  </tbody>
+</table>
+
+</main>
+
+<script src="{{ url_for('static', filename='js/admin_dashboard.js') }}"></script>
+</html>

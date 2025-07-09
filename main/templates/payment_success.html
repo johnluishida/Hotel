@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Success</title>
+    <link href="{{ url_for('static', filename='css/book_room.css') }}" rel="stylesheet">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <a href="/"><img src="{{ url_for('static', filename='images/Moon_hotel_logo.png') }}"></a>
+        <ul>
+        </ul>
+    </div>
+
+    <!-- PAYMENT SUCCESS -->
+    <div class="first_section">
+        <div class="container">
+            <h2>Payment Successful!</h2>
+            <p>Your booking has been confirmed. Thank you for choosing Moon Hotel!</p>
+            <a href="/profile" class="book-btn">Go to My Profile</a>
+        </div>
+    </div>
+
+</body>
+</html>

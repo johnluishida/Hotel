@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amenities</title>
+    <link href="{{ url_for('static', filename='css/amenities.css') }}" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="header">
+        <a href="/"><img src="{{ url_for('static', filename='images/Moon_hotel_logo.png') }}"></a>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/rooms">Rooms</a></li>
+            <li><a href="/amenities" class="active">Amenities</a></li>
+            <li><a href="/feedback">Feedback</a></li>
+            {% if is_logged_in %}
+                <button onclick="location.href='/bookroom'" style="cursor: pointer; color: black;">Book now</button>
+              <a href="/profile"><i class='bx bxs-user-circle user-icon'></i></a>
+            {% else %}
+              <li style="padding-right: 20px;"><a href="/login">Login</a></li>
+              <button onclick="location.href='/bookroom'" style="cursor: pointer; color: black;">Book now</button>
+            {% endif %}
+        </ul>
+    </div>
+
+    <div class="first_section">
+        <center><h1 style="color: black;">Available Amenities</h1></center>
+        <br>
+        <div class="flex-container">
+            {% for item in amenities %}
+                <div class="amenities-container">
+                    <center><h3>{{ item.amenity }}</h3></center>
+                    <br>
+                    <p><strong>Description:</strong> {{ item.description }}</p>
+                    <p><strong>Price:</strong> ₱{{ "%.2f"|format(item.price) }}</p>
+                </div>
+            {% else %}
+                <h1>No Amenities Available.</h1>
+            {% endfor %}
+        </div>
+    </div>    
+        
+</body>
+</html>

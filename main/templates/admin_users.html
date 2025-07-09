@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <link href="{{ url_for('static', filename='css/admin_users.css') }}" rel="stylesheet">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body class="color">
+
+  <!-- Header -->
+  <header class="fixed top-0 left-0 w-full h bg-color text-white flex items-center px-4 z-50" style="display: flex; align-items: center;">
+    <img src="{{ url_for('static', filename='images/Moon_hotel_logo.png') }}" class="header-img">
+    <button id="toggleSidebar" class="mr-4 bg-white burger-color px-3 py-1 rounded">☰</button>
+  </header>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed top-16 left-0 w-64 h-[calc(100%-4rem)] bg-white text-white transition-transform z-40"  style="height: calc(100% - 4rem); overflow-y: auto;">
+    <nav class="p-4">
+      <ul>
+        <li>
+          <a href="/admin"><i class='bx bxs-home icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Home</span></a>
+        </li>
+        <li class="active">
+            <a href="/admin"><i class='bx bx-user icon-bg'></i>
+            <span class="sidebar-text burger-color sidebar-text-size">Users</span></a>
+          </li>
+        <li>
+          <a href="/admin_rooms"><i class='bx bxs-bed icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Rooms</span></a>
+        </li>   
+        <li>
+          <a href="/admin_amenities"><i class='bx bx-plus-circle icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Amenities</span></a>
+        </li>  
+        <li>
+          <a href="/admin_booking"><i class='bx bxs-book icon-bg'></i>
+          <span class="sidebar-text burger-color sidebar-text-size">Book</span></a>
+        </li>   
+        <li>
+          <a href="/admin_feedback"><i class='bx bxs-comment-detail icon-bg'></i> 
+          <span class="sidebar-text burger-color sidebar-text-size">Feedback</span></a>
+        </li>
+        <li style="position: absolute; bottom: 30px;">
+          <a href="/logout">
+            <i class='bx bx-log-out icon-bg'></i>
+            <span class="sidebar-text burger-color sidebar-text-size">Logout</span>
+          </a>
+        </li>
+        
+    </ul>
+    </nav>
+  </aside>
+
+  
+  <main id="mainContent" class="pt-16 px-4 transition-all content-shift">
+    <h1>User Management</h1>
+    
+<table border="1" cellpadding="10" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone No.</th>
+            <th>Address</th>
+            <th>Age</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    {% for users in users %}
+    <tbody>
+        
+        <tr>
+            <td>{{ users.username }}</td>
+            <td>{{  users.name }}</td>
+            <td>{{ users.email }}</td>
+            <td>{{ users.phone }}</td>
+            <td>{{ users.address }}</td>
+            <td>{{ users.age }}</td>
+            <td>
+              <button class="editBtn"
+              data-id="{{ users.id }}"
+              data-username="{{ users.username }}"
+              data-name="{{ users.name }}"
+              data-email="{{ users.email }}"
+              data-phone="{{ users.phone }}"
+              data-address="{{ users.address }}"
+              data-age="{{ users.age }}"
+            >Edit</button> |<form action="{{ url_for('moon_routes.delete_user', user_id=users.id) }}" method="get" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this user? This action cannot be undone.');">
+              <button type="submit" class="delete-button">
+                  Delete
+              </button>
+          </form>
+         </a>         
+            </td>
+          
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+
+    {% if not users %}
+        <h1>No Users Registered.</h1>
+    {% endif %}
+    {% if total_pages > 1 %}
+<nav aria-label="Page navigation">
+  <ul style="list-style: none; display: flex; justify-content: center; gap: 10px; padding: 0; margin-top: 1rem;">
+    {% for p in range(1, total_pages + 1) %}
+      <li>
+        {% if p == page %}
+          <strong style="padding: 8px 14px; background-color: black; color: white; border-radius: 6px;">{{ p }}</strong>
+        {% else %}
+          <a href="{{ url_for('moon_routes.admin_users', page=p) }}" style="padding: 8px 14px; border: 1px solid black; border-radius: 6px; text-decoration: none; color: black;">{{ p }}</a>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</nav>
+{% endif %}
+
+    <br><button id="addusersBtn" class="adduser">Add User</button>
+   <!-- Add User Modal -->
+<div id="addUserModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeModal">&times;</span>
+    <h2 style="text-align: center;">Add New User</h2>
+    <form action="{{ url_for('moon_routes.add_user') }}" method="POST" style="padding: 20px;">
+      
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" placeholder="Enter username" required>
+
+      <label for="name">Full Name:</label>
+      <input type="text" id="name" name="name" placeholder="Enter full name" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" placeholder="Enter email" required>
+
+      <label for="phone">Phone:</label>
+      <input type="text" id="phone" name="phone" placeholder="Enter phone number" required>
+
+      <label for="address">Address:</label>
+      <textarea id="address" name="address" placeholder="Enter your address" rows="4" required></textarea>
+
+      <label for="age">Age:</label>
+      <input type="number" id="age" name="age" placeholder="Enter age" required>
+
+      <label for="password">Password:</label>
+      <div class="password-wrapper">
+        <input type="password" id="passwordField" name="password" placeholder="Enter password" required>
+        <span class="toggle-password" onclick="togglePassword()">
+          <i class='bx bx-show' id="toggleIcon"></i>
+        </span>
+      </div>
+
+      <input type="submit" value="Add User" style="background-color: goldenrod; color: black; border: none; border-radius: 5px; cursor: pointer;">
+    </form>
+  </div>
+</div>
+
+<!-- Edit User Modal -->
+<div id="editUserModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeEditModal">&times;</span>
+    <h2 style="text-align: center;">Edit User</h2>
+    <form id="editUserForm" method="POST" action="{{ url_for('moon_routes.update_user') }}" style="padding: 20px;">
+      <input type="hidden" id="editUserId" name="id">
+
+      <label for="editUsername">Username:</label>
+      <input type="text" id="editUsername" name="username" required readonly>
+
+      <label for="editName">Full Name:</label>
+      <input type="text" id="editName" name="name" required>
+
+      <label for="editEmail">Email:</label>
+      <input type="email" id="editEmail" name="email" required>
+
+      <label for="editPhone">Phone:</label>
+      <input type="text" id="editPhone" name="phone" required>
+
+      <label for="editAddress">Address:</label>
+      <textarea id="editAddress" name="address" rows="4" required></textarea>
+
+      <label for="editAge">Age:</label>
+      <input type="number" id="editAge" name="age" required>
+
+      <input type="submit" value="Update User" style="background-color: #c5a880; color: white; border: none; border-radius: 5px; cursor: pointer;">
+    </form>
+  </div>
+</div>
+
+
+  </main>
+
+  
+  <script src="{{ url_for('static', filename='js/admin_users.js') }}"></script>
+
+</body>
+</html>

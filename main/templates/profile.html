@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profile</title>
+  <link href="{{ url_for('static', filename='css/profile.css') }}" rel="stylesheet" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="header">
+    <a href="/"><img src="{{ url_for('static', filename='images/Moon_hotel_logo.png') }}" alt="Moon Hotel Logo" /></a>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/rooms">Rooms</a></li>
+      <li><a href="/amenities">Amenities</a></li>
+      <li><a href="/feedback">Feedback</a></li>
+      {% if is_logged_in %}
+        <button onclick="location.href='/bookroom'" style="cursor:pointer; color:black;">Book now</button>
+        <a href="/profile"><i class='bx bxs-user-circle user-icon'></i></a>
+      {% else %}
+        <li><a href="/login">Login</a></li>
+        <button onclick="location.href='/bookroom'" style="cursor:pointer; color:black;">Book now</button>
+      {% endif %}
+    </ul>
+  </div>
+
+  <div class="first_section">
+    <div class="container-profile">
+      <div class="sidebar">
+        <a href="#" id="profile-link" onclick="loadContent('profile', this)">Profile</a>
+        <a href="#" id="booking-link" onclick="loadContent('booking', this)">Booking</a>
+        <div class="bottom">
+          <a style="margin-right: 20px ;" href="/logout">Logout</a>
+        </div>
+      </div>
+      <div class="main-content" id="main-content"></div>
+    </div>
+  </div>
+
+  <!-- Edit Profile Modal (remains unchanged) -->
+  <div id="editProfileModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h3>Edit Profile</h3>
+      <form action="/update_profile" method="POST">
+        <label for="username">Username</label>
+  <input type="text" id="username" name="username" value="{{ user.username }}" required /><br>
+
+  <label for="name">Full Name</label>
+  <input type="text" id="name" name="name" value="{{ user.name }}" required /><br>
+
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email" value="{{ user.email }}" required /><br>
+
+  <label for="phone">Phone</label>
+  <input type="text" id="phone" name="phone" value="{{ user.phone }}" required /><br>
+
+  <label for="address">Address</label>
+  <input type="text" id="address" name="address" value="{{ user.address }}" required /><br>
+
+  <label for="age">Age</label>
+  <input type="number" id="age" name="age" value="{{ user.age }}" required /><br>
+  <button type="submit">Save Changes</button>
+
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Load initial content on page load: profile
+    document.addEventListener("DOMContentLoaded", () => {
+      loadContent('profile', document.getElementById('profile-link'));
+    });
+
+    function loadContent(page, element) {
+  const content = {
+    profile: `
+      <div class="profile-card">
+        <h2>Profile</h2>
+        {% if user %}
+          <div class="profile-item"><span class="label">Username:</span> <span class="value">{{ user.username }}</span></div>
+          <div class="profile-item"><span class="label">Name:</span> <span class="value">{{ user.name }}</span></div>
+          <div class="profile-item"><span class="label">Email:</span> <span class="value">{{ user.email }}</span></div>
+          <div class="profile-item"><span class="label">Phone:</span> <span class="value">{{ user.phone }}</span></div>
+          <div class="profile-item"><span class="label">Address:</span> <span class="value">{{ user.address }}</span></div>
+          <div class="profile-item"><span class="label">Age:</span> <span class="value">{{ user.age }}</span></div>
+        {% else %}
+          <p>No user information available.</p>
+        {% endif %}
+        <button id="editProfileBtn">Edit Profile</button>
+      </div>
+    `,
+     booking: `
+          <div class="bookings-container">
+            <h1>Your Bookings</h1>
+            {% if bookings %}
+              <table class="bookings-table" id="bookingsTable">
+                <thead>
+                  <tr>
+                    <th>Room Type</th>
+                    <th>Room Number</th>
+                    <th>Floor</th>
+                    <th>Amenities</th>
+                    <th>Check-In</th>
+                    <th>Check-Out</th>
+                    <th>Guests</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for booking in bookings %}
+                    <tr>
+                      <td>{{ booking.room_type }}</td>
+                      <td>{{ booking.room_number }}</td>
+                      <td>{{ booking.floor }}</td>
+                      <td>{{ booking.amenities or 'No amenities selected' }}</td>
+                      <td>{{ booking.check_in }}</td>
+                      <td>{{ booking.check_out }}</td>
+                      <td>{{ booking.guest }}</td>
+                      <td>₱{{ booking.total_price }}</td>
+                      <td><span class="status {{ booking.status | lower }}">{{ booking.status }}</span></td>
+                      <td>
+  {% if booking.status != 'Cancelled' %}
+    <button type="button" 
+            class="cancel-booking-btn" 
+            data-booking-id="{{ booking.id }}">Cancel</button>
+  {% else %}
+    <span class="text-muted">Cancelled</span>
+  {% endif %}
+</td>
+
+
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <div id="pagination" class="pagination-buttons"></div>
+            {% else %}
+              <p class="no-bookings">You have no bookings yet.</p>
+            {% endif %}
+          </div>
+        
+      `};
+
+  document.getElementById('main-content').innerHTML = content[page] || '<h1>Page not found</h1>';
+
+  // Highlight active sidebar link
+  document.querySelectorAll('.sidebar a').forEach(link => link.classList.remove('active'));
+  element.classList.add('active');
+
+  if (page === 'profile') {
+    setTimeout(() => {
+      setupEditProfileModal();
+    }, 0);
+  }
+
+  if (page === 'booking') {
+    setTimeout(() => {
+      paginateTable(5);
+      bindCancelButtons();
+    }, 50);
+  }
+}
+
+
+    // Example pagination function - implement as needed
+    function paginateTable(rowsPerPage) {
+      const table = document.getElementById('bookingsTable');
+      if (!table) return;
+
+      const tbody = table.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      const paginationDiv = document.getElementById('pagination');
+      paginationDiv.innerHTML = '';
+
+      let currentPage = 1;
+      const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+      function showPage(page) {
+        currentPage = page;
+        let start = (page - 1) * rowsPerPage;
+        let end = start + rowsPerPage;
+
+        rows.forEach((row, i) => {
+          row.style.display = i >= start && i < end ? '' : 'none';
+        });
+
+        renderPagination();
+      }
+
+      function renderPagination() {
+        paginationDiv.innerHTML = '';
+
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement('button');
+          btn.textContent = i;
+          btn.classList.add('page-btn');
+          if (i === currentPage) btn.classList.add('active-page');
+          btn.addEventListener('click', () => showPage(i));
+          paginationDiv.appendChild(btn);
+        }
+      }
+
+      showPage(1);
+    }
+
+    // Bind Cancel Booking button event listeners
+    function bindCancelButtons() {
+  document.querySelectorAll('.cancel-booking-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const bookingId = btn.getAttribute('data-booking-id');
+      if (confirm('Are you sure you want to cancel this booking?')) {
+        fetch(`/cancel_booking/${bookingId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            btn.parentElement.innerHTML = '<span class="text-muted">Cancelled</span>';
+            alert(data.message);
+          } else {
+            alert(data.message);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      }
+    });
+  });
+}
+
+    function setupEditProfileModal() {
+    const modal = document.getElementById("editProfileModal");
+    const closeBtn = modal.querySelector(".close-btn");
+
+    const editBtn = document.getElementById("editProfileBtn");
+    if (editBtn) {
+      editBtn.addEventListener("click", () => {
+        modal.style.display = "block";
+      });
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+      });
+    }
+
+    window.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    });
+  }
+  
+  </script>
+</body>
+</html>

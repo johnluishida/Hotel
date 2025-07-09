@@ -1,0 +1,110 @@
+body {
+    padding: 0;
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/static/images/photo.webp') center center/cover no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif; /* Clean modern font */
+}
+
+.first_section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.first_section .container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 50px 50px;
+    padding-right: 65px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px); /* glass effect */
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    color: #ffffff;
+    width: 400px;
+    text-align: center;
+}
+
+.first_section .container h1 {
+    margin-bottom: 20px;
+    font-size: 2rem;
+    letter-spacing: 1px;
+}
+
+input[id="username"],
+input[type="password"],
+button {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+input[id="username"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    outline: none;
+    text-align: center;
+}
+input::placeholder {
+    color: #ccc;
+}
+
+button {
+    background-color: #ffce00;
+    color: #fff;
+    cursor: pointer;
+    width: 280px;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background-color: yellow;
+}
+
+a{
+    color: #00BFFF;
+}
+
+a:hover{
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.password-container {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #fff;
+}
+input[type="password"], input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    text-align: center;
+}

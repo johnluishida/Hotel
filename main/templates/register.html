@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link href="{{ url_for('static', filename='css/register.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="first_section">
+        <div class="container">
+            <form action="{{ url_for('moon_routes.register_submit') }}" method="POST">
+                <h3>Create Account</h3>
+            
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" placeholder="Create a username" name="username" required>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% for category, message in messages %}
+                            {% if category == 'username_error' %}
+                                <div class="error">{{ message }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+            
+                <div class="form-group">
+                    <label for="name">Full Name:</label>
+                    <input type="text" id="name" placeholder="Enter your full name" name="name" required>
+                </div>
+            
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" placeholder="Enter your email" name="email" required>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% for category, message in messages %}
+                            {% if category == 'email_error' %}
+                                <div class="error">{{ message }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+            
+                <div class="form-group">
+                    <label for="phone">Phone:</label>
+                    <input type="text" id="phone" placeholder="Enter your phone number" name="phone" required>
+                </div>
+            
+                <div class="form-group">
+                    <label for="address">Address:</label>
+                    <textarea id="address" placeholder="Enter your address" name="address" required></textarea>
+                </div>
+            
+                <div class="form-group">
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" placeholder="Enter your age" name="age" required min="1">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% for category, message in messages %}
+                            {% if category == 'age_error' %}
+                                <div class="error">{{ message }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+            
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" placeholder="Create a password" name="password" required>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% for category, message in messages %}
+                            {% if category == 'password_length_error' %}
+                                <div class="error">{{ message }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+            
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password:</label>
+                    <input type="password" id="confirm_password" placeholder="Confirm your password" name="confirm_password" required>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% for category, message in messages %}
+                            {% if category == 'password_error' %}
+                                <div class="error">{{ message }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endwith %}
+                </div><br>
+            
+                <button type="submit">Register</button>
+            </form>                        
+            <p>Already have an account? <a href="/login">Login here</a></p>
+        </div>
+    </div>
+</body>
+</html>
